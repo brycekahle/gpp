@@ -17,9 +17,12 @@
     var VIEW_ANGLE = 45,
     ASPECT = WIDTH / HEIGHT,
     NEAR = 0.1,
-    FAR = 10000;
+    FAR = 20000;
     
     var PI = 3.141596;
+    
+    var BOXDEPTH = 16 * HEIGHT, 
+        BOXHEIGHT = 2 * HEIGHT;
 
     init();
     animate();
@@ -32,11 +35,7 @@
 
         scene = new THREE.Scene();
 
-        addWall(0, PI / 2, 0, -2 * HEIGHT, 0, -2 * HEIGHT, 0xff0000); // left
-        addWall(0, -PI / 2, 0, 2 * HEIGHT, 0, -2 * HEIGHT, 0x00ff00); // right
-        addWall(PI / 2, 0, PI / 2, 0, 2 * HEIGHT, -2 * HEIGHT, 0x0000ff); // top
-        addWall(-PI / 2, 0, PI / 2, 0, -2 * HEIGHT, -2 * HEIGHT, 0xffff00); // bottom
-        addWall(0, 0, 0, 0, 0, -4 * HEIGHT, 0x000000); // back
+        addBox(BOXDEPTH, BOXHEIGHT);
 
         renderer = new THREE.CanvasRenderer();
         renderer.setSize(WIDTH, HEIGHT);
@@ -45,9 +44,18 @@
         document.addEventListener('mousemove', onDocumentMouseMove, false);
     }
     
-    function addWall(xrot, yrot, zrot, x, y, z, wallcolor) {
+    function addBox(depth, height) {
+        //         XROT     YROT    ZROT            X            Y           Z       W       H      COLOR
+        addWall(      0,  PI / 2,      0, -height / 2,           0, -depth / 2,  depth, height, 0xff0000); // left
+        addWall(      0, -PI / 2,      0,  height / 2,           0, -depth / 2,  depth, height, 0x00ff00); // right
+        addWall( PI / 2,       0, PI / 2,           0,  height / 2, -depth / 2,  depth, height, 0x0000ff); // top
+        addWall(-PI / 2,       0, PI / 2,           0, -height / 2, -depth / 2,  depth, height, 0xffff00); // bottom        
+        addWall(      0,       0,      0,           0,           0,     -depth, height, height, 0x000000); // back
+    }
+    
+    function addWall(xrot, yrot, zrot, x, y, z, width, height, wallcolor) {
         var geometry, material, mesh;
-        geometry = new THREE.PlaneGeometry(4 * HEIGHT, 4 * HEIGHT, 1, 1);
+        geometry = new THREE.PlaneGeometry(width, height, 1, 1);
         material = new THREE.MeshBasicMaterial( { color: wallcolor, wireframe: false } );
 
         mesh = new THREE.Mesh( geometry, material );        
@@ -56,7 +64,7 @@
         mesh.rotation.z = zrot;
         mesh.position.x = x;
         mesh.position.y = y;
-        mesh.position.z = z;        
+        mesh.position.z = z;
         scene.add( mesh );
     }
 
@@ -69,8 +77,8 @@
     }
     
     function onDocumentMouseMove(event) {
-        camera.position.x = (event.clientX / WIDTH) * (4 * HEIGHT) - (2 * HEIGHT);
-        camera.position.y = -((event.clientY / HEIGHT) * (4 * HEIGHT)) + (2 * HEIGHT);
+        camera.position.x = (event.clientX / WIDTH) * BOXHEIGHT - (BOXHEIGHT / 2);
+        camera.position.y = -((event.clientY / HEIGHT) * BOXHEIGHT) + (BOXHEIGHT / 2);
     }
 
     function render() {
