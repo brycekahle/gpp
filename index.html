@@ -5,21 +5,31 @@
   <script src="jquery-1.7.min.js"></script>
   <script src="Three.js"></script>
   <script src="RequestAnimationFrame.js"></script>
+  <script src="Stats.js"></script>
+  
   <script src="physics.js"></script>
   <script type="text/javascript">
-    var camera, scene, renderer, world, paddle, ball;
+    var camera, scene, renderer, paddle, mousex = 0.5, mousey = 0.5, stats, container, ball;
+    
+    var WINDOWWIDTH = window.innerWidth,
+    WINDOWHEIGHT = window.innerHeight;
+
 
     // set the scene size
-    var WIDTH = window.innerWidth,
-    HEIGHT = window.innerHeight;
+    var WIDTH = WINDOWWIDTH,
+    HEIGHT = WINDOWHEIGHT;
 
 // set some camera attributes
     var VIEW_ANGLE = 45,
     ASPECT = WIDTH / HEIGHT,
     NEAR = 0.1,
-    FAR = 10000;
+    FAR = 40000;
     
     var PI = 3.141596;
+    var MOVEFACTOR = 0.1;
+    
+    var BOXDEPTH = 32 * HEIGHT, 
+        BOXHEIGHT = 4 * HEIGHT;
     
     var ballSize = WIDTH / 4;
 
@@ -27,29 +37,40 @@
     animate();
 
     function init() {
-
+        container = document.createElement( 'div' );
+        document.body.appendChild(container);
+    
         camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR );
         camera.position.z = 100;
-        //camera.position.x = -1000;
 
         scene = new THREE.Scene();
-
-        addWall(0, PI / 2, 0, -2 * HEIGHT, 0, -2 * HEIGHT, 0xff0000); // left
-        addWall(0, -PI / 2, 0, 2 * HEIGHT, 0, -2 * HEIGHT, 0x00ff00); // right
-        addWall(PI / 2, 0, PI / 2, 0, 2 * HEIGHT, -2 * HEIGHT, 0x0000ff); // top
-        addWall(-PI / 2, 0, PI / 2, 0, -2 * HEIGHT, -2 * HEIGHT, 0xffff00); // bottom
-        addWall(0, 0, 0, 0, 0, -4 * HEIGHT, 0x000000); // back
-
+        addBox(BOXDEPTH, BOXHEIGHT);
+        
         renderer = new THREE.CanvasRenderer();
-        renderer.setSize(WIDTH, HEIGHT);
+        renderer.setSize(WINDOWWIDTH, WINDOWHEIGHT);
 
-        $('body').append(renderer.domElement);
+        container.appendChild(renderer.domElement);
+        
+        stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				container.appendChild( stats.domElement );
+        
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         
         world = new vphy.World();
         world.start(Date.now()/1000);
         createPaddle(WIDTH, HEIGHT);
         addBall(0xff0000, 0, 0, 0);
+    }
+    
+    function addBox(depth, height) {
+        //         XROT     YROT    ZROT            X            Y           Z       W       H      COLOR
+        addWall(      0,  PI / 2,      0, -height / 2,           0, -depth / 2,  depth, height, 0xff0000); // left
+        addWall(      0, -PI / 2,      0,  height / 2,           0, -depth / 2,  depth, height, 0x00ff00); // right
+        addWall( PI / 2,       0, PI / 2,           0,  height / 2, -depth / 2,  depth, height, 0x0000ff); // top
+        addWall(-PI / 2,       0, PI / 2,           0, -height / 2, -depth / 2,  depth, height, 0xffff00); // bottom        
+        addWall(      0,       0,      0,           0,           0,     -depth, height, height, 0x000000); // back
     }
     
     function createPaddle(width, height){
@@ -84,18 +105,18 @@
         world.add(ball);
     }
     
-    function addWall(xrot, yrot, zrot, x, y, z, wallcolor) {
+    function addWall(xrot, yrot, zrot, x, y, z, width, height, wallcolor) {
         var geometry, material, mesh;
-        geometry = new THREE.PlaneGeometry(4 * HEIGHT, 4 * HEIGHT, 1, 1);
+        geometry = new THREE.PlaneGeometry(width, height, 1, 1);
         material = new THREE.MeshBasicMaterial( { color: wallcolor, wireframe: false } );
 
-        mesh = new THREE.Mesh( geometry, material );        
+        mesh = new THREE.Mesh( geometry, material );      
         mesh.rotation.x = xrot;
         mesh.rotation.y = yrot;
         mesh.rotation.z = zrot;
         mesh.position.x = x;
         mesh.position.y = y;
-        mesh.position.z = z;        
+        mesh.position.z = z;
         scene.add( mesh );
     }
 
@@ -114,21 +135,28 @@
         // Include examples/js/RequestAnimationFrame.js for cross-browser compatibility.
         requestAnimationFrame( animate );
         render();
-
+        stats.update();
     }
     
     function onDocumentMouseMove(event) {
-        camera.position.x = (event.clientX / WIDTH) * (4 * HEIGHT) - (2 * HEIGHT);
-        camera.position.y = -((event.clientY / HEIGHT) * (4 * HEIGHT)) + (2 * HEIGHT);
+        mousex = (event.clientX / WINDOWWIDTH);
+        mousey = (event.clientY / WINDOWHEIGHT);
         paddle.x = camera.position.x;
         paddle.y = camera.position.y;
     }
 
     function render() {
-        //mesh.rotation.x += 0.01;
-        //mesh.rotation.y += 0.02;
-        //camera.position.z += 10;
+        var xoffset = mousex - 0.5;
+        var yoffset = -(mousey - 0.5);
+        
+        var newx = camera.position.x + (xoffset * BOXHEIGHT * MOVEFACTOR);
+        var newy = camera.position.y + (yoffset * BOXHEIGHT * MOVEFACTOR);
+        
+        camera.position.x = Math.max(Math.min(newx, (BOXHEIGHT / 2) - (HEIGHT / 2)), -(BOXHEIGHT / 2) + (HEIGHT / 2));
+        camera.position.y = Math.max(Math.min(newy, (BOXHEIGHT / 2) - (HEIGHT / 2)), -(BOXHEIGHT / 2) + (HEIGHT / 2));
 
+        //camera.position.z += 5;
+        
         renderer.render( scene, camera );
     }   
     
