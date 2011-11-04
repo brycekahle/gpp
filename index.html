@@ -14,6 +14,14 @@
     var WINDOWWIDTH = window.innerWidth,
     WINDOWHEIGHT = window.innerHeight;
 
+	// Set colors
+	var roomColors = {
+		top: 0x999999,
+		bottom: 0xdddddd,
+		left: 0xbbbbbb,
+		right: 0xaaaaaa,
+		back: 0xcccccc
+	}
 
     // set the scene size
     var WIDTH = WINDOWWIDTH,
@@ -62,15 +70,21 @@
         
         createPaddle(WIDTH, HEIGHT);
         addBall(0xffffff, 0, 0, 0);
+		
+		// Teh Light!
+		var ambientLight = new THREE.AmbientLight( 0xFFFFFF );
+		scene.add( ambientLight );
+		
+		
     }
     
     function addBox(depth, height) {
         //         XROT     YROT    ZROT            X            Y           Z       W       H      COLOR
-        addWall(      0,  PI / 2,      0, -height / 2,           0, -depth / 2,  depth, height, 0xff0000); // left
-        addWall(      0, -PI / 2,      0,  height / 2,           0, -depth / 2,  depth, height, 0x00ff00); // right
-        addWall( PI / 2,       0, PI / 2,           0,  height / 2, -depth / 2,  depth, height, 0x0000ff); // top
-        addWall(-PI / 2,       0, PI / 2,           0, -height / 2, -depth / 2,  depth, height, 0xffff00); // bottom        
-        addWall(      0,       0,      0,           0,           0,     -depth, height, height, 0x000000); // back
+        addWall(      0,  PI / 2,      0, -height / 2,           0, -depth / 2,  depth, height, roomColors.left); // left
+        addWall(      0, -PI / 2,      0,  height / 2,           0, -depth / 2,  depth, height, roomColors.right); // right
+        addWall( PI / 2,       0, PI / 2,           0,  height / 2, -depth / 2,  depth, height, roomColors.top); // top
+        addWall(-PI / 2,       0, PI / 2,           0, -height / 2, -depth / 2,  depth, height, roomColors.bottom); // bottom        
+        addWall(      0,       0,      0,           0,           0,     -depth, height, height, roomColors.back); // back
         
         world.add(new vphy.AABB({
             x : -height / 2,
