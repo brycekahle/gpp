@@ -63,6 +63,8 @@
         camera.position.z = 100;
 
         scene = new THREE.Scene();
+        world = new vphy.World();
+        world.start(Date.now()/1000);
         addBox(BOXDEPTH, BOXHEIGHT);
         
         renderer = new THREE.CanvasRenderer();
@@ -77,10 +79,8 @@
         
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         
-        world = new vphy.World();
-        world.start(Date.now()/1000);
         createPaddle(WIDTH, HEIGHT);
-        addBall(0xff0000, 0, 0, 0);
+        addBall(0xffffff, 0, 0, 0);
 		
 		// Teh Light!
 		var ambientLight = new THREE.AmbientLight( ambientColors.dark );
@@ -100,6 +100,47 @@
         addWall( PI / 2,       0, PI / 2,           0,  height / 2, -depth / 2,  depth, height, roomColors.top); // top
         addWall(-PI / 2,       0, PI / 2,           0, -height / 2, -depth / 2,  depth, height, roomColors.bottom); // bottom        
         addWall(      0,       0,      0,           0,           0,     -depth, height, height, roomColors.back); // back
+        
+        world.add(new vphy.AABB({
+            x : -height / 2,
+            y : 0,
+            z : -depth / 2,
+            width : 1,
+            height: height,
+            depth : depth
+        }));
+        world.add(new vphy.AABB({
+            x : height / 2,
+            y : 0,
+            z : -depth / 2,
+            width : 1,
+            height: height,
+            depth : depth
+        }));
+        world.add(new vphy.AABB({
+            x : 0,
+            y : -height / 2,
+            z : -depth / 2,
+            width : height,
+            height: 1,
+            depth : depth
+        }));
+        world.add(new vphy.AABB({
+            x : 0,
+            y : height / 2,
+            z : -depth / 2,
+            width : height,
+            height: 1,
+            depth : depth
+        }));
+        world.add(new vphy.AABB({
+            x : 0,
+            y : 0,
+            z : -depth,
+            width : height,
+            height: height,
+            depth : 1
+        }));
     }
     
     function createPaddle(width, height){
@@ -129,7 +170,7 @@
             restitution : 1,
             radius : ballSize,
         });
-        ball.setVelocity(10, 10, -10);
+        ball.setVelocity(0, 0, -20);
         ball.mesh = mesh;
         world.add(ball);
     }
