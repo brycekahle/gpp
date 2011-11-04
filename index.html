@@ -81,6 +81,7 @@
         
         createPaddle(WIDTH, HEIGHT);
         addBall(0xffffff, 0, 0, 0);
+        addBlock(0xffffff, 100, 100, -100);
 		
 		// Teh Light!
 		var ambientLight = new THREE.AmbientLight( ambientColors.dark );
@@ -163,16 +164,49 @@
         mesh.position.z = z;
         scene.add( mesh );
 
-        ball  = new vphy.Sphere({
+        ball = new vphy.Sphere({
             x : x,
             y : y,
             z : z,
             restitution : 1,
             radius : ballSize,
         });
-        ball.setVelocity(0, 0, -20);
+        ball.setVelocity(10, 10, -50);
         ball.mesh = mesh;
         world.add(ball);
+        ball.updatePosition = function () {
+            this.mesh.position.x = this.x;
+            this.mesh.position.y = this.y;
+            this.mesh.position.z = this.z;
+        };
+    }
+    
+    function addBlock(blockColor, x, y, z){
+        var geometry, material, mesh;
+        geometry = new THREE.SphereGeometry(ballSize);
+        material = new THREE.MeshLambertMaterial( { color: ballColor, wireframe: false } );
+
+        mesh = new THREE.Mesh( geometry, material );        
+        mesh.position.x = x;
+        mesh.position.y = y;
+        mesh.position.z = z;
+        scene.add( mesh );
+
+        ball = new vphy.Sphere({
+            x : x,
+            y : y,
+            z : z,
+            restitution : 1,
+            radius : ballSize,
+        });
+        ball.setVelocity(10, 10, -50);
+        ball.mesh = mesh;
+        world.add(ball);
+        ball.updatePosition = function () {
+            this.mesh.position.x = this.x;
+            this.mesh.position.y = this.y;
+            this.mesh.position.z = this.z;
+        };
     }
     
     function addWall(xrot, yrot, zrot, x, y, z, width, height, wallcolor) {
@@ -197,10 +231,7 @@
         var timeStep = 1/180;
         world.step(timeStep, Date.now()/1000);
         
-        //ball.mesh.position.x = ball.x;
-        //ball.mesh.position.y = ball.y;
-        ball.mesh.position.z = ball.z;
-        
+        ball.updatePosition();
 
         // Include examples/js/RequestAnimationFrame.js for cross-browser compatibility.
         requestAnimationFrame( animate );
