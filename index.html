@@ -5,10 +5,10 @@
   <script src="jquery-1.7.min.js"></script>
   <script src="Three.js"></script>
   <script src="RequestAnimationFrame.js"></script>
+  <script src="physics.js"></script>
   <script type="text/javascript">
-    var camera, scene, renderer;
-    
-    
+    var camera, scene, renderer, world, paddle, ball;
+
     // set the scene size
     var WIDTH = window.innerWidth,
     HEIGHT = window.innerHeight;
@@ -20,6 +20,8 @@
     FAR = 10000;
     
     var PI = 3.141596;
+    
+    var ballSize = WIDTH / 4;
 
     init();
     animate();
@@ -43,6 +45,43 @@
 
         $('body').append(renderer.domElement);
         document.addEventListener('mousemove', onDocumentMouseMove, false);
+        
+        world = new vphy.World();
+        world.start(Date.now()/1000);
+        createPaddle(WIDTH, HEIGHT);
+        addBall(0xff0000, 0, 0, 0);
+    }
+    
+    function createPaddle(width, height){
+        paddle = new vphy.AABB({
+            width : width,
+            height: height,
+            depth : 1
+        });
+        world.add(paddle);
+    }
+    
+    function addBall(ballColor, x, y, z){
+        var geometry, material, mesh;
+        geometry = new THREE.SphereGeometry(ballSize);
+        material = new THREE.MeshBasicMaterial( { color: ballColor, wireframe: false } );
+
+        mesh = new THREE.Mesh( geometry, material );        
+        mesh.position.x = x;
+        mesh.position.y = y;
+        mesh.position.z = z;
+        scene.add( mesh );
+
+        ball  = new vphy.Sphere({
+            x : x,
+            y : y,
+            z : z,
+            restitution : 1,
+            radius : ballSize,
+        });
+        ball.setVelocity(10, 10, -10);
+        ball.mesh = mesh;
+        world.add(ball);
     }
     
     function addWall(xrot, yrot, zrot, x, y, z, wallcolor) {
@@ -61,6 +100,16 @@
     }
 
     function animate() {
+        paddle.x = camera.position.x;
+        paddle.y = camera.position.y;
+    
+        var timeStep = 1/180;
+        world.step(timeStep, Date.now()/1000);
+        
+        ball.mesh.position.x = ball.x;
+        ball.mesh.position.y = ball.y;
+        ball.mesh.position.z = ball.z;
+        
 
         // Include examples/js/RequestAnimationFrame.js for cross-browser compatibility.
         requestAnimationFrame( animate );
@@ -71,10 +120,11 @@
     function onDocumentMouseMove(event) {
         camera.position.x = (event.clientX / WIDTH) * (4 * HEIGHT) - (2 * HEIGHT);
         camera.position.y = -((event.clientY / HEIGHT) * (4 * HEIGHT)) + (2 * HEIGHT);
+        paddle.x = camera.position.x;
+        paddle.y = camera.position.y;
     }
 
     function render() {
-
         //mesh.rotation.x += 0.01;
         //mesh.rotation.y += 0.02;
         //camera.position.z += 10;
