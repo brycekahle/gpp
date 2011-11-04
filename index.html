@@ -22,6 +22,17 @@
 		right: 0xaaaaaa,
 		back: 0xcccccc
 	}
+	
+	var ambientColors = {
+		light: 0xcccccc,
+		dark: 0x555555
+	}
+	
+	var lightColors = {
+		key: 0xFFFFFF,
+		fill: 0xCC0000,
+		backlight: 0x00CC00
+	}
 
     // set the scene size
     var WIDTH = WINDOWWIDTH,
@@ -72,8 +83,12 @@
         addBall(0xff0000, 0, 0, 0);
 		
 		// Teh Light!
-		var ambientLight = new THREE.AmbientLight( 0xFFFFFF );
+		var ambientLight = new THREE.AmbientLight( ambientColors.dark );
 		scene.add( ambientLight );
+		var ballPointLight = new THREE.PointLight( lightColors.key );
+		ballPointLight.position.z = 1;
+		ballPointLight.intensity = 0.5;
+		scene.add( ballPointLight );
 		
 		
     }
@@ -99,7 +114,7 @@
     function addBall(ballColor, x, y, z){
         var geometry, material, mesh;
         geometry = new THREE.SphereGeometry(ballSize);
-        material = new THREE.MeshBasicMaterial( { color: ballColor, wireframe: false } );
+        material = new THREE.MeshLambertMaterial( { color: ballColor, wireframe: false } );
 
         mesh = new THREE.Mesh( geometry, material );        
         mesh.position.x = x;
@@ -122,7 +137,7 @@
     function addWall(xrot, yrot, zrot, x, y, z, width, height, wallcolor) {
         var geometry, material, mesh;
         geometry = new THREE.PlaneGeometry(width, height, 1, 1);
-        material = new THREE.MeshBasicMaterial( { color: wallcolor, wireframe: false } );
+        material = new THREE.MeshLambertMaterial( { color: wallcolor, wireframe: false } );
 
         mesh = new THREE.Mesh( geometry, material );      
         mesh.rotation.x = xrot;
@@ -141,8 +156,8 @@
         var timeStep = 1/180;
         world.step(timeStep, Date.now()/1000);
         
-        ball.mesh.position.x = ball.x;
-        ball.mesh.position.y = ball.y;
+        //ball.mesh.position.x = ball.x;
+        //ball.mesh.position.y = ball.y;
         ball.mesh.position.z = ball.z;
         
 
