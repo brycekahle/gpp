@@ -19,7 +19,7 @@
     NEAR = 0.1,
     FAR = 10000;
     
-    var PI = 3.14;
+    var PI = 3.141596;
 
     init();
     animate();
@@ -27,7 +27,7 @@
     function init() {
 
         camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR );
-        camera.position.z = 4000;
+        camera.position.z = 100;
         //camera.position.x = -1000;
 
         scene = new THREE.Scene();
