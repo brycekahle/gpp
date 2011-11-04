@@ -12,31 +12,39 @@
     var camera, scene, renderer, paddle, 
     mousex = 0.5, mousey = 0.5, mousexoffset = 0, mouseyoffset = 0,
     stats, container, accelStats, ball;
+    
+    var xaccel = 0, yaccel = 0, zaccel = 0;
+    var xv = 0, yv = 0, zv = 0;
+    var maxx = 0, maxy = 0, maxz = 0;
+    
+    var xma = simple_moving_averager(10);
+    var yma = simple_moving_averager(10);
+    var zma = simple_moving_averager(10);
    
     var WINDOWWIDTH = window.innerWidth,
     WINDOWHEIGHT = window.innerHeight;
 
-	// Set colors
-	var roomColors = {
-		top: 0x999999,
-		bottom: 0xdddddd,
-		left: 0xbbbbbb,
-		right: 0xaaaaaa,
-		back: 0xcccccc
-	}
+    // Set colors
+    var roomColors = {
+      top: 0x999999,
+      bottom: 0xdddddd,
+      left: 0xbbbbbb,
+      right: 0xaaaaaa,
+      back: 0xcccccc
+    }
 
     // set the scene size
     var WIDTH = WINDOWWIDTH,
     HEIGHT = WINDOWHEIGHT;
 
-// set some camera attributes
+    // set some camera attributes
     var VIEW_ANGLE = 45,
     ASPECT = WIDTH / HEIGHT,
     NEAR = 0.1,
     FAR = 40000;
     
     var PI = 3.141596;
-    var MOVEFACTOR = 0.1, MOTIONFACTOR = 0.05;
+    var MOVEFACTOR = 0.1, MOTIONFACTOR = 0.1;
     
     var BOXDEPTH = 32 * HEIGHT, 
         BOXHEIGHT = 4 * HEIGHT;
@@ -64,28 +72,31 @@
         container.appendChild(renderer.domElement);
         
         stats = new Stats();
-				stats.domElement.style.position = 'absolute';
-				stats.domElement.style.top = '0px';
-				container.appendChild( stats.domElement );
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.top = '0px';
+        container.appendChild( stats.domElement );
         
-        accelStats = document.createElement('div');
-        accelStats.style.position = 'absolute';
-        accelStats.style.top = '0px';
-        accelStats.style.right = '0px';
-        $(accelStats).html("<div>X: <span id='xaccel'>0</span></div><div>Y: <span id='yaccel'>0</span></div><div>Z: <span id='zaccel'>0</span></div>");
-        container.appendChild(accelStats);
+        var reset = document.createElement('div');
+        $('<div id="reset">Reset</div>').appendTo($(container)).click(function() {
+          
+        });
+        
+        //accelStats = document.createElement('div');
+        //accelStats.style.position = 'absolute';
+        //accelStats.style.top = '0px';
+        //accelStats.style.right = '0px';
+        //$(accelStats).html("<div>X: <span id='xaccel'>0</span></div><div>Y: <span id='yaccel'>0</span></div><div>Z: <span id='zaccel'>0</span></div><div>t: <span id='time'>0</span></div>");
+        //container.appendChild(accelStats);
         
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         window.addEventListener('devicemotion', onDeviceMotion, false);
         
         createPaddle(WIDTH, HEIGHT);
         addBall(0xffffff, 0, 0, 0);
-		
-		// Teh Light!
-		var ambientLight = new THREE.AmbientLight( 0xFFFFFF );
-		scene.add( ambientLight );
-		
-		
+        
+        // Teh Light!
+        var ambientLight = new THREE.AmbientLight( 0xFFFFFF );
+        scene.add( ambientLight );
     }
     
     function addBox(depth, height) {
@@ -204,37 +215,51 @@
     }
     
     function onDeviceMotion(event) {
-        var yaccel = (event.accelerationIncludingGravity.x - 9.8); // when held up in landscape, X gets gravity
-        var xaccel = (event.accelerationIncludingGravity.y);
-        mouseyoffset = Math.round(yaccel * MOTIONFACTOR * 10000) / 10000; 
-        mousexoffset = Math.round(xaccel * MOTIONFACTOR * 10000) / 10000;
-        $('#xaccel').text(event.accelerationIncludingGravity.x);
-        $('#yaccel').text(event.accelerationIncludingGravity.y);
-        $('#zaccel').text(event.accelerationIncludingGravity.z);
+        var xa = (event.accelerationIncludingGravity.x - 9.8) / 5.0; // 10 - normalize
+        var ya = (event.accelerationIncludingGravity.y) / 5.0; // 5 - normalize
+        var za = event.accelerationIncludingGravity.z;
+      
+        // intentionally switched
+        mousexoffset = ya * MOTIONFACTOR;
+        mouseyoffset = -xa * MOTIONFACTOR;
     }
     
     function onDocumentMouseMove(event) {
         mousex = (event.clientX / WINDOWWIDTH);
-        mousey = (event.clientY / WINDOWHEIGHT);
+        mousey = (event.clientY / WINDOWHEIGHT); // 0 to 1
         
-        mousexoffset = (mousex - 0.5) * MOVEFACTOR;
+        mousexoffset = (mousex - 0.5) * MOVEFACTOR; // -0.5 to 0.5
         mouseyoffset = (-(mousey - 0.5)) * MOVEFACTOR;
-
-        paddle.x = camera.position.x;
-        paddle.y = camera.position.y;
     }
 
     function render() {        
-        var newx = camera.position.x + (mousexoffset * BOXHEIGHT);
-        var newy = camera.position.y + (mouseyoffset * BOXHEIGHT);
+        var newx = camera.position.x + mousexoffset * BOXHEIGHT;
+        var newy = camera.position.y + mouseyoffset * BOXHEIGHT;
         
         camera.position.x = Math.max(Math.min(newx, (BOXHEIGHT / 2) - (HEIGHT / 2)), -(BOXHEIGHT / 2) + (HEIGHT / 2));
         camera.position.y = Math.max(Math.min(newy, (BOXHEIGHT / 2) - (HEIGHT / 2)), -(BOXHEIGHT / 2) + (HEIGHT / 2));
 
-        //camera.position.z += 5;
+        paddle.x = camera.position.x;
+        paddle.y = camera.position.y;
         
         renderer.render( scene, camera );
-    }   
+    }
+
+    function simple_moving_averager(period) {
+        var nums = [];
+        return function(num) {
+            nums.push(num);
+            if (nums.length > period)
+                nums.splice(0,1);  // remove the first element of the array
+            var sum = 0;
+            for (var i in nums)
+                sum += nums[i];
+            var n = period;
+            if (nums.length < period)
+                n = nums.length;
+            return(sum/n);
+        }
+    }    
     
   </script>
 

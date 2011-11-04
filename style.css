@@ -2,3 +2,9 @@ html,body {
   margin: 0;
   padding: 0;
 }
+
+#reset {
+position: absolute;
+  top: 0px;
+  right: 0px;
+}
