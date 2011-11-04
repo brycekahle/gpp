@@ -8,7 +8,9 @@
   <script src="Stats.js"></script>
   
   <script type="text/javascript">
-    var camera, scene, renderer, paddle, mousex = 0.5, mousey = 0.5, stats, container;
+    var camera, scene, renderer, paddle, 
+    mousex = 0.5, mousey = 0.5, mousexoffset = 0, mouseyoffset = 0,
+    stats, container, accelStats;
     
     var WINDOWWIDTH = window.innerWidth,
     WINDOWHEIGHT = window.innerHeight;
@@ -24,7 +26,7 @@
     FAR = 40000;
     
     var PI = 3.141596;
-    var MOVEFACTOR = 0.1;
+    var MOVEFACTOR = 0.1, MOTIONFACTOR = 0.05;
     
     var BOXDEPTH = 32 * HEIGHT, 
         BOXHEIGHT = 4 * HEIGHT;
@@ -52,7 +54,15 @@
 				stats.domElement.style.top = '0px';
 				container.appendChild( stats.domElement );
         
+        accelStats = document.createElement('div');
+        accelStats.style.position = 'absolute';
+        accelStats.style.top = '0px';
+        accelStats.style.right = '0px';
+        $(accelStats).html("<div>X: <span id='xaccel'>0</span></div><div>Y: <span id='yaccel'>0</span></div><div>Z: <span id='zaccel'>0</span></div>");
+        container.appendChild(accelStats);
+        
         document.addEventListener('mousemove', onDocumentMouseMove, false);
+        window.addEventListener('devicemotion', onDeviceMotion, false);
     }
     
     function addBox(depth, height) {
@@ -85,17 +95,27 @@
         stats.update();
     }
     
+    function onDeviceMotion(event) {
+        var yaccel = (event.accelerationIncludingGravity.x - 9.8); // when held up in landscape, X gets gravity
+        var xaccel = (event.accelerationIncludingGravity.y);
+        mouseyoffset = Math.round(yaccel * MOTIONFACTOR * 10000) / 10000; 
+        mousexoffset = Math.round(xaccel * MOTIONFACTOR * 10000) / 10000;
+        $('#xaccel').text(event.accelerationIncludingGravity.x);
+        $('#yaccel').text(event.accelerationIncludingGravity.y);
+        $('#zaccel').text(event.accelerationIncludingGravity.z);
+    }
+    
     function onDocumentMouseMove(event) {
         mousex = (event.clientX / WINDOWWIDTH);
         mousey = (event.clientY / WINDOWHEIGHT);
+        
+        mousexoffset = (mousex - 0.5) * MOVEFACTOR;
+        mouseyoffset = (-(mousey - 0.5)) * MOVEFACTOR;
     }
 
-    function render() {
-        var xoffset = mousex - 0.5;
-        var yoffset = -(mousey - 0.5);
-        
-        var newx = camera.position.x + (xoffset * BOXHEIGHT * MOVEFACTOR);
-        var newy = camera.position.y + (yoffset * BOXHEIGHT * MOVEFACTOR);
+    function render() {        
+        var newx = camera.position.x + (mousexoffset * BOXHEIGHT);
+        var newy = camera.position.y + (mouseyoffset * BOXHEIGHT);
         
         camera.position.x = Math.max(Math.min(newx, (BOXHEIGHT / 2) - (HEIGHT / 2)), -(BOXHEIGHT / 2) + (HEIGHT / 2));
         camera.position.y = Math.max(Math.min(newy, (BOXHEIGHT / 2) - (HEIGHT / 2)), -(BOXHEIGHT / 2) + (HEIGHT / 2));
