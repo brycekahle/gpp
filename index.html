@@ -9,7 +9,8 @@
   
   <script src="physics.js"></script>
   <script type="text/javascript">
-    var camera, scene, renderer, paddle, mousex = 0.5, mousey = 0.5, stats, container, ball, ballPointLight, ballPointLight2, ballBackLight;
+    var camera, scene, renderer, paddle, mousex = 0.5, mousey = 0.5, stats, container;
+    var balls = new Array();
     
     var WINDOWWIDTH = window.innerWidth,
     WINDOWHEIGHT = window.innerHeight;
@@ -39,7 +40,19 @@
 		green: 0x00CC00,
 		blue: 0x0000CC
 	}
-
+    
+    // Colors are - Red, Light Red, Blue, Light Blue, Green, Light Green, Orange, Light Orange
+    var blockColors = new Array( 
+               0xea1313, 
+               0xfa4a4a, 
+               0x3699ff,
+               0x82c0ff, 
+               0x72d91f, 
+               0x9eff4f, 
+               0xff871c, 
+               0xffa250
+    );
+    
     // set the scene size
     var WIDTH = WINDOWWIDTH,
     HEIGHT = WINDOWHEIGHT;
@@ -92,28 +105,15 @@
         
         createPaddle(WIDTH, HEIGHT);
         addBall(ballColors.red, 0, 0, 0);
-        addBlock(0xffffff, 100, 100, -100);
+        addBlock(0xffffff, 0, 0, 100-BOXDEPTH);
+        addBlock(0xffffff, -500, -500, 100-BOXDEPTH);
+        addBlock(0xffffff, 500, 500, 100-BOXDEPTH);
+        addBlock(0xffffff, -500, 500, 100-BOXDEPTH);
+        addBlock(0xffffff, 500, -500, 100-BOXDEPTH);
 		
 		// Teh Light!
 		var ambientLight = new THREE.AmbientLight( ambientColors.light );
 		scene.add( ambientLight );
-		
-		ballKeyLight = new THREE.PointLight( lightColors.key );
-		ballKeyLight.intensity = 100;
-		ballKeyLight.distance = lightDistance.key;
-		scene.add( ballKeyLight );
-		
-		ballFillLight = new THREE.PointLight( lightColors.fill );
-		ballFillLight.intensity = 60;
-		ballFillLight.distance = lightDistance.fill;
-		scene.add( ballFillLight );
-		
-		ballBackLight = new THREE.PointLight( lightColors.backlight );
-		ballBackLight.intensity = 60;
-		ballBackLight.distance = lightDistance.backlight;
-		scene.add( ballBackLight );
-		
-		
     }
     
     function addBox(depth, height) {
@@ -186,7 +186,7 @@
         mesh.position.z = z;
         scene.add( mesh );
 
-        ball = new vphy.Sphere({
+        var ball = new vphy.Sphere({
             x : x,
             y : y,
             z : z,
@@ -196,39 +196,67 @@
         ball.setVelocity(10, 10, -50);
         ball.mesh = mesh;
         world.add(ball);
+        
+        ball.KeyLight = new THREE.PointLight( lightColors.key );
+		ball.KeyLight.intensity = 100;
+		ball.KeyLight.distance = lightDistance.key;
+		scene.add( ball.KeyLight );
+		
+		ball.FillLight = new THREE.PointLight( lightColors.fill );
+		ball.FillLight.intensity = 60;
+		ball.FillLight.distance = lightDistance.fill;
+		scene.add( ball.FillLight );
+		
+		ball.BackLight = new THREE.PointLight( lightColors.backlight );
+		ball.BackLight.intensity = 60;
+		ball.BackLight.distance = lightDistance.backlight;
+		scene.add( ball.BackLight );
+
         ball.updatePosition = function () {
             this.mesh.position.x = this.x;
             this.mesh.position.y = this.y;
             this.mesh.position.z = this.z;
+            
+            ball.KeyLight.position.x = this.x + ( WIDTH * 0.5 );
+            ball.KeyLight.position.y = this.y + ( WIDTH * 0.5 );
+            ball.KeyLight.position.z = this.z + ( WIDTH * 1 );
+
+            ball.FillLight.position.x = this.x - ( WIDTH * 0.5 );
+            ball.FillLight.position.y = this.y + ( WIDTH * 0.5 );
+            ball.FillLight.position.z = this.z + ( WIDTH * 0.75 );
+            
+            ball.BackLight.position.x = this.x;
+            ball.BackLight.position.y = this.y + ( WIDTH * 0.3 );
+            ball.BackLight.position.z = this.z - ( WIDTH * 1 );
         };
+
+        balls.push(ball);
     }
     
     function addBlock(blockColor, x, y, z){
         var geometry, material, mesh;
-        geometry = new THREE.SphereGeometry(ballSize);
-        material = new THREE.MeshLambertMaterial( { color: ballColor, wireframe: false } );
+        geometry = new THREE.CubeGeometry(500, 500, 500);
+        material = new THREE.MeshLambertMaterial( { color: blockColor, wireframe: false } );
 
-        mesh = new THREE.Mesh( geometry, material );        
+        mesh = new THREE.Mesh( geometry, material );
         mesh.position.x = x;
         mesh.position.y = y;
         mesh.position.z = z;
         scene.add( mesh );
 
-        ball = new vphy.Sphere({
+        var block = new vphy.AABB({
             x : x,
             y : y,
             z : z,
-            restitution : 1,
-            radius : ballSize,
+            width : 500,
+            height: 500,
+            depth : 500
         });
-        ball.setVelocity(10, 10, -50);
-        ball.mesh = mesh;
-        world.add(ball);
-        ball.updatePosition = function () {
-            this.mesh.position.x = this.x;
-            this.mesh.position.y = this.y;
-            this.mesh.position.z = this.z;
-        };
+        
+        world.add(block);
+
+        block.mesh = mesh;
+        world.add(block);
     }
     
     function addWall(xrot, yrot, zrot, x, y, z, width, height, wallcolor) {
@@ -253,23 +281,10 @@
         var timeStep = 1/180;
         world.step(timeStep, Date.now()/1000);
         
-        ball.updatePosition();
-        ball.mesh.position.x = ball.x;
-        ball.mesh.position.y = ball.y;
-        ball.mesh.position.z = ball.z;
+        for (ball in balls){
+            balls[ball].updatePosition();
+        }
 		
-		ballKeyLight.position.x = ball.x + ( WIDTH * 0.5 );
-        ballKeyLight.position.y = ball.y + ( WIDTH * 0.5 );
-        ballKeyLight.position.z = ball.z + ( WIDTH * 1 );
-
-        ballFillLight.position.x = ball.x - ( WIDTH * 0.5 );
-        ballFillLight.position.y = ball.y + ( WIDTH * 0.5 );
-        ballFillLight.position.z = ball.z + ( WIDTH * 0.75 );
-		
-		ballBackLight.position.x = ball.x;
-		ballBackLight.position.y = ball.y + ( WIDTH * 0.3 );
-		ballBackLight.position.z = ball.z - ( WIDTH * 1 );
-
         // Include examples/js/RequestAnimationFrame.js for cross-browser compatibility.
         requestAnimationFrame( animate );
         render();
