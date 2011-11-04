@@ -9,7 +9,7 @@
   
   <script src="physics.js"></script>
   <script type="text/javascript">
-    var camera, scene, renderer, paddle, mousex = 0.5, mousey = 0.5, stats, container, ball;
+    var camera, scene, renderer, paddle, mousex = 0.5, mousey = 0.5, stats, container, ball, ballPointLight, ballPointLight2, ballBackLight;
     
     var WINDOWWIDTH = window.innerWidth,
     WINDOWHEIGHT = window.innerHeight;
@@ -30,15 +30,21 @@
 	
 	var lightColors = {
 		key: 0xFFFFFF,
-		fill: 0xCC0000,
-		backlight: 0x00CC00
+		fill: 0xFFFFFF,
+		backlight: 0xFFFFFF
+	}
+	
+	var ballColors = {
+		red: 0xCC0000,
+		green: 0x00CC00,
+		blue: 0x0000CC
 	}
 
     // set the scene size
     var WIDTH = WINDOWWIDTH,
     HEIGHT = WINDOWHEIGHT;
 
-// set some camera attributes
+	// set some camera attributes
     var VIEW_ANGLE = 45,
     ASPECT = WIDTH / HEIGHT,
     NEAR = 0.1,
@@ -51,6 +57,11 @@
         BOXHEIGHT = 4 * HEIGHT;
     
     var ballSize = WIDTH / 4;
+	var lightDistance = {
+		key: WIDTH * 1.25,
+		fill: WIDTH * 1.1,
+		backlight: WIDTH * 1.1
+	}
 
     init();
     animate();
@@ -80,15 +91,26 @@
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         
         createPaddle(WIDTH, HEIGHT);
-        addBall(0xffffff, 0, 0, 0);
+        addBall(ballColors.red, 0, 0, 0);
 		
 		// Teh Light!
-		var ambientLight = new THREE.AmbientLight( ambientColors.dark );
+		var ambientLight = new THREE.AmbientLight( ambientColors.light );
 		scene.add( ambientLight );
-		var ballPointLight = new THREE.PointLight( lightColors.key );
-		ballPointLight.position.z = 1;
-		ballPointLight.intensity = 0.5;
-		scene.add( ballPointLight );
+		
+		ballKeyLight = new THREE.PointLight( lightColors.key );
+		ballKeyLight.intensity = 100;
+		ballKeyLight.distance = lightDistance.key;
+		scene.add( ballKeyLight );
+		
+		ballFillLight = new THREE.PointLight( lightColors.fill );
+		ballFillLight.intensity = 60;
+		ballFillLight.distance = lightDistance.fill;
+		scene.add( ballFillLight );
+		
+		ballBackLight = new THREE.PointLight( lightColors.backlight );
+		ballBackLight.intensity = 60;
+		ballBackLight.distance = lightDistance.backlight;
+		scene.add( ballBackLight );
 		
 		
     }
@@ -197,10 +219,21 @@
         var timeStep = 1/180;
         world.step(timeStep, Date.now()/1000);
         
-        //ball.mesh.position.x = ball.x;
-        //ball.mesh.position.y = ball.y;
+        ball.mesh.position.x = ball.x;
+        ball.mesh.position.y = ball.y;
         ball.mesh.position.z = ball.z;
-        
+		
+		ballKeyLight.position.x = ball.x + ( WIDTH * 0.5 );
+        ballKeyLight.position.y = ball.y + ( WIDTH * 0.5 );
+        ballKeyLight.position.z = ball.z + ( WIDTH * 1 );
+
+        ballFillLight.position.x = ball.x - ( WIDTH * 0.5 );
+        ballFillLight.position.y = ball.y + ( WIDTH * 0.5 );
+        ballFillLight.position.z = ball.z + ( WIDTH * 0.75 );
+		
+		ballBackLight.position.x = ball.x;
+		ballBackLight.position.y = ball.y + ( WIDTH * 0.3 );
+		ballBackLight.position.z = ball.z - ( WIDTH * 1 );
 
         // Include examples/js/RequestAnimationFrame.js for cross-browser compatibility.
         requestAnimationFrame( animate );
