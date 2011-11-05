@@ -120,11 +120,12 @@
         
         createPaddle(WIDTH, HEIGHT);
         spawnBall();
-        var bColor = randomNumber(blockColors.length / 2) ;
+        var bColor = randomNumber(blockColors.length) / 2;
         for (var i=1; i <= 10; i++) {
             var x = Math.min(Math.max(randomNumber(BOXHEIGHT) - (BOXHEIGHT / 2), -(BOXHEIGHT/2) + 250), BOXHEIGHT/2 - 250);
             var y = Math.min(Math.max(randomNumber(BOXHEIGHT) - (BOXHEIGHT / 2), -(BOXHEIGHT/2) + 250), BOXHEIGHT/2 - 250);
-            addBlock(blockColors[bColor] + (i % 2), x, y, randomNumber(5000) - BOXDEPTH);
+            var z = randomNumber(5000) - BOXDEPTH;
+            addBlock(blockColors[bColor * 2] + (i % 2), x, y, z);            
         }
         
         //addBlock(blockColors[bColor], 0, 0, 1000-BOXDEPTH);
@@ -136,6 +137,17 @@
         // Teh Light!
         var ambientLight = new THREE.AmbientLight( ambientColors.light );
         //scene.add( ambientLight );
+    }
+    
+    function addShadow(x, y, z) {
+        var plane = new THREE.Mesh( new THREE.PlaneGeometry( 500, 500 ), new THREE.MeshBasicMaterial( { color: 0xcccccc } ) );
+        plane.position.x = x;
+        plane.position.y = (-BOXHEIGHT / 2); 
+        plane.position.z = z;
+				plane.rotation.x = - PI / 2;
+				plane.overdraw = true;
+				scene.add( plane );
+        return plane;
     }
     
     function spawnBall() {
@@ -297,6 +309,8 @@
 
         block.mesh = mesh;
         world.add(block);
+        
+        block.shadow = addShadow(x, y, z);
     }
     
     function addWall(xrot, yrot, zrot, x, y, z, width, height, wallcolor) {
