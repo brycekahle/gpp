@@ -14,6 +14,7 @@
     stats, container;
     var score = 0;
     var balls = new Array();
+    var blocks = new Array();
     var paused = false;
   
     var WINDOWWIDTH = window.innerWidth,
@@ -105,27 +106,26 @@
         stats.domElement.style.top = '0px';
         container.appendChild( stats.domElement );
         
-        
+        /*
         var reset = document.createElement('div');
         $('<div id="reset" style="display:none;">Reset</div>').appendTo($(container)).click(function() {
           for (i in balls) {
             removeBall(balls[i]);
           }
+          
+          //for (b in blocks) { removeBlock(blocks[b]) }
+          scoreDisplay.text("0");
+          //spawnBlocks();
           spawnBall();
         });
+        */
         
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         window.addEventListener('devicemotion', onDeviceMotion, false);
         
         createPaddle(WIDTH, HEIGHT);
         spawnBall();
-        var bColor = randomNumber(blockColors.length) / 2;
-        for (var i=1; i <= 10; i++) {
-            var x = Math.min(Math.max(randomNumber(BOXHEIGHT) - (BOXHEIGHT / 2), -(BOXHEIGHT/2) + 250), BOXHEIGHT/2 - 250);
-            var y = Math.min(Math.max(randomNumber(BOXHEIGHT) - (BOXHEIGHT / 2), -(BOXHEIGHT/2) + 250), BOXHEIGHT/2 - 250);
-            var z = randomNumber(5000) - BOXDEPTH;
-            addBlock(blockColors[bColor * 2] + (i % 2), x, y, z);            
-        }
+        spawnBlocks();
         
         //addBlock(blockColors[bColor], 0, 0, 1000-BOXDEPTH);
         //addBlock(blockColors[bColor + 1], -500, -500, 1000-BOXDEPTH);
@@ -136,6 +136,16 @@
         // Teh Light!
         var ambientLight = new THREE.AmbientLight( ambientColors.light );
         //scene.add( ambientLight );
+    }
+    
+    function spawnBlocks() {
+        var bColor = randomNumber(blockColors.length) / 2;
+        for (var i=1; i <= 10; i++) {
+            var x = Math.min(Math.max(randomNumber(BOXHEIGHT) - (BOXHEIGHT / 2), -(BOXHEIGHT/2) + 250), BOXHEIGHT/2 - 250);
+            var y = Math.min(Math.max(randomNumber(BOXHEIGHT) - (BOXHEIGHT / 2), -(BOXHEIGHT/2) + 250), BOXHEIGHT/2 - 250);
+            var z = randomNumber(5000) - BOXDEPTH;
+            addBlock(blockColors[bColor * 2] + (i % 2), x, y, z);            
+        }
     }
     
     function addShadow(x, y, z) {
@@ -312,6 +322,7 @@
         world.add(block);
         
         block.shadow = addShadow(x, y, z);
+        blocks.push(block);
     }
     
     function removeBall(ball){
@@ -321,8 +332,10 @@
     }
 
     function removeBlock(block){
+        scene.remove(block.shadow);
         scene.remove(block.mesh);
         world.remove(block);
+        blocks.splice(blocks.indexOf(block), 1);
         updateScore();
     }
     
