@@ -1,15 +1,56 @@
 html,body {
-  margin: 0;
-  padding: 0;
-  font-family: Tahoma, Arial, Helvetica, Sans-Serif;
+	margin: 0;
+	padding: 0;
+	font-family: Tahoma, Arial, Helvetica, Sans-Serif;
+	background-color: #efefef;
+	background-image: linear-gradient(bottom, rgb(110,168,255) 0%, rgb(176,208,255) 100%);
+	background-image: -o-linear-gradient(bottom, rgb(110,168,255) 0%, rgb(176,208,255) 100%);
+	background-image: -moz-linear-gradient(bottom, rgb(110,168,255) 0%, rgb(176,208,255) 100%);
+	background-image: -webkit-linear-gradient(bottom, rgb(110,168,255) 0%, rgb(176,208,255) 100%);
+	background-image: -ms-linear-gradient(bottom, rgb(110,168,255) 0%, rgb(176,208,255) 100%);
+
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(110,168,255)),
+		color-stop(1, rgb(176,208,255))
+	);
 }
 
 #reset {
-position: absolute;
-  top: 0px;
-  right: 0px;
+	position: absolute;
+	top: 60px;
+	right: 10px;
+	font-size: 14px; 
+	padding: 15px; 
+	background-color: rgba(0,0,0,0.75); 
+	color: #fff; 
+	-webkit-border-radius: 4px; 
+	-moz-border-radius: 4px; 
+	border-radius: 8px; 
+	cursor: pointer;
+	 text-transform: uppercase; font-weight: bold;
+}
+
+#pause_btn {
+	position: absolute;
+	top: 60px;
+	left: 10px;
+	font-size: 14px; 
+	padding: 15px; 
+	background-color: rgba(0,0,0,0.75);
+	color: #fff; 
+	-webkit-border-radius: 4px; 
+	-moz-border-radius: 4px; 
+	border-radius: 8px; 
+	cursor: pointer;
+	 text-transform: uppercase; font-weight: bold;
 }
 
 #disableOverlay { background-color: rgba(0,0,0,0.5); position: absolute; top: 0; left: 0; height: 500px; width: 500px; }
-#play_btn { font-size: 36px; padding: 20px; display: inline-block; position: absolute; background-color: #000; color: #fff; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 8px; cursor: pointer; }
+#play_btn { font-size: 36px; padding: 20px; display: inline-block; position: absolute; background-color: #000; color: #fff; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-weight: bold; }
 
+#scoreBoard { padding: 10px; background-color: rgba(0,0,0,0.75); color: #fff; text-align: center; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 8px; position: absolute; bottom: 10px; left: 0; }
+#scoreBoard  h3 { margin: 0; padding: 0; font-size: 14px; text-transform: uppercase; }
+#scoreBoard  #score { font-size: 72px; font-weight: bold; line-height: 60px; }
