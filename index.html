@@ -77,7 +77,7 @@
 	}
 
     init();
-    animate();
+    //animate();
 
     function init() {
         container = document.createElement( 'div' );
@@ -313,7 +313,21 @@
         renderer.render( scene, camera );
     }   
     
+	$(function () {
+		$('#disableOverlay').css({ height: WINDOWHEIGHT, width: WINDOWWIDTH });
+		var playBtnHeight = $('#play_btn').height();
+		var playBtnWidth = $('#play_btn').width();
+		$('#play_btn').css({ top: (WINDOWHEIGHT/2)-(playBtnHeight/2), left: (WINDOWWIDTH/2)-(playBtnWidth/2) });
+		$('#play_btn').click( function () {
+			animate();
+			$('#play_btn').hide();
+			$('#disableOverlay').hide();
+		});
+	});
+	
   </script>
+  <div id="disableOverlay"></div>
+  <div id="play_btn">Play!</div>
 
 </body>
 </html>
