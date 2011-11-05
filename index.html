@@ -252,6 +252,8 @@
             height: 500,
             depth : 500
         });
+
+        block.events.on('contact', function(evt){scene.remove(block.mesh);world.remove(block);}, false);
         
         world.add(block);
 
