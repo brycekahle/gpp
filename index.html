@@ -13,7 +13,7 @@
     mousex = 0.5, mousey = 0.5, mousexoffset = 0, mouseyoffset = 0,
     stats, container;
     var balls = new Array();
-    var paused = false;
+    var paused = true;
   
     var WINDOWWIDTH = window.innerWidth,
     WINDOWHEIGHT = window.innerHeight;
@@ -39,9 +39,9 @@
     };
     
     var ballColors = new Array(
-      0xCC0000,
-      0x00CC00,
-      0x0000CC
+      0x7d0d0d,
+      0x767d0d,
+      0x9a4c00
     );
     
     // Colors are - Red, Light Red, Blue, Light Blue, Green, Light Green, Orange, Light Orange
@@ -375,18 +375,41 @@
 		var scoreBoardWidth = $('#scoreBoard').width();
 		$('#play_btn').css({ top: (WINDOWHEIGHT/2)-(playBtnHeight/2), left: (WINDOWWIDTH/2)-(playBtnWidth/2) });
 		$('#play_btn').click( function () {
-			animate();
+			PlayGame();
+		});
+		$('#pause_btn').click( function () {
+			PauseGame();
+		});
+		$("body").keydown(function(e) {
+			//alert(e.keyCode);
+			if (e.keyCode == '13') {
+				PlayGame();
+			}
+			if (e.keyCode == '27') {
+				PauseGame();
+			}
+			if (e.keyCode == '82') {
+				
+			}
+		});
+		$('#scoreBoard').css({ left: (WINDOWWIDTH/2)-(scoreBoardWidth/2) });
+		function PauseGame() {
+			paused = !paused;
+			if (!paused) requestAnimationFrame(animate);
+			$('#play_btn').show();
+			$('#disableOverlay').show();
+			$('#scoreBoard').hide();
+			$('#reset').hide();
+			$('#pause_btn').hide(); 
+		}
+		function PlayGame() {
+			PauseGame();
 			$('#play_btn').hide();
 			$('#disableOverlay').hide();
 			$('#scoreBoard').show();
 			$('#reset').show();
-			$('#pause_btn').show();      
-		});
-    $('#pause_btn').click( function () {
-        paused = !paused;
-        if (!paused) requestAnimationFrame(animate);
-    });
-		$('#scoreBoard').css({ left: (WINDOWWIDTH/2)-(scoreBoardWidth/2) });
+			$('#pause_btn').show(); 
+		}
 	});
 	
   </script>
