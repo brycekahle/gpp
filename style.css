@@ -1,6 +1,7 @@
 html,body {
   margin: 0;
   padding: 0;
+  font-family: Tahoma, Arial, Helvetica, Sans-Serif;
 }
 
 #reset {
@@ -8,3 +9,7 @@ position: absolute;
   top: 0px;
   right: 0px;
 }
+
+#disableOverlay { background-color: rgba(0,0,0,0.5); position: absolute; top: 0; left: 0; height: 500px; width: 500px; }
+#play_btn { font-size: 36px; padding: 20px; display: inline-block; position: absolute; background-color: #000; color: #fff; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 8px; cursor: pointer; }
+
