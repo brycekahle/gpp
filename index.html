@@ -105,7 +105,7 @@
         
         
         var reset = document.createElement('div');
-        $('<div id="reset">Reset</div>').appendTo($(container)).click(function() {
+        $('<div id="reset" style="display:none;">Reset</div>').appendTo($(container)).click(function() {
           for (i in balls) {
               scene.remove(balls[i].mesh);
               world.remove(balls[i]);
@@ -359,17 +359,24 @@
 		$('#disableOverlay').css({ height: WINDOWHEIGHT, width: WINDOWWIDTH });
 		var playBtnHeight = $('#play_btn').height();
 		var playBtnWidth = $('#play_btn').width();
+		var scoreBoardWidth = $('#scoreBoard').width();
 		$('#play_btn').css({ top: (WINDOWHEIGHT/2)-(playBtnHeight/2), left: (WINDOWWIDTH/2)-(playBtnWidth/2) });
 		$('#play_btn').click( function () {
 			animate();
 			$('#play_btn').hide();
 			$('#disableOverlay').hide();
+			$('#scoreBoard').show();
+			$('#reset').show();
+			$('#pause_btn').show();
 		});
+		$('#scoreBoard').css({ left: (WINDOWWIDTH/2)-(scoreBoardWidth/2) });
 	});
 	
   </script>
   <div id="disableOverlay"></div>
   <div id="play_btn">Play!</div>
+  <div id="pause_btn" style="display:none;">Pause</div>
+  <div id="scoreBoard" style="display:none;"><h3>Score</h3><div id="score">0</div></div>
 
 </body>
 </html>
