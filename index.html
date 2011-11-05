@@ -109,15 +109,7 @@
         
         var reset = document.createElement('div');
         $('<div id="reset" style="display:none;">Reset</div>').appendTo($(container)).click(function() {
-          for (i in balls) {
-            removeBall(balls[i]);
-          }
-          
-          for (b in blocks) { removeBlock(blocks[b]) }
-          blocks.splice(0, blocks.length);
-          $('#score').text("0");
-          spawnBlocks();
-          spawnBall();
+          resetWorld();
         });
         
         
@@ -137,6 +129,18 @@
         // Teh Light!
         var ambientLight = new THREE.AmbientLight( ambientColors.light );
         //scene.add( ambientLight );
+    }
+    
+    function resetWorld() {
+        for (i in balls) {
+            removeBall(balls[i]);
+          }
+          
+          for (b in blocks) { removeBlock(blocks[b]) }
+          blocks.splice(0, blocks.length);
+          $('#score').text("0");
+          spawnBlocks();
+          spawnBall();
     }
     
     function spawnBlocks() {
@@ -432,7 +436,7 @@
 				PauseGame();
 			}
 			if (e.keyCode == '82') {
-				
+				resetWorld();
 			}
 		});
 		$('#scoreBoard').css({ left: (WINDOWWIDTH/2)-(scoreBoardWidth/2) });
