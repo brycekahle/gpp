@@ -3,18 +3,18 @@ html,body {
 	padding: 0;
 	font-family: Tahoma, Arial, Helvetica, Sans-Serif;
 	background-color: #efefef;
-	background-image: linear-gradient(bottom, rgb(110,168,255) 0%, rgb(176,208,255) 100%);
-	background-image: -o-linear-gradient(bottom, rgb(110,168,255) 0%, rgb(176,208,255) 100%);
-	background-image: -moz-linear-gradient(bottom, rgb(110,168,255) 0%, rgb(176,208,255) 100%);
-	background-image: -webkit-linear-gradient(bottom, rgb(110,168,255) 0%, rgb(176,208,255) 100%);
-	background-image: -ms-linear-gradient(bottom, rgb(110,168,255) 0%, rgb(176,208,255) 100%);
+	background-image: linear-gradient(bottom, rgb(128,128,128) 0%, rgb(240,240,240) 100%);
+	background-image: -o-linear-gradient(bottom, rgb(128,128,128) 0%, rgb(240,240,240) 100%);
+	background-image: -moz-linear-gradient(bottom, rgb(128,128,128) 0%, rgb(240,240,240) 100%);
+	background-image: -webkit-linear-gradient(bottom, rgb(128,128,128) 0%, rgb(240,240,240) 100%);
+	background-image: -ms-linear-gradient(bottom, rgb(128,128,128) 0%, rgb(240,240,240) 100%);
 
 	background-image: -webkit-gradient(
 		linear,
 		left bottom,
 		left top,
-		color-stop(0, rgb(110,168,255)),
-		color-stop(1, rgb(176,208,255))
+		color-stop(0, rgb(128,128,128)),
+		color-stop(1, rgb(240,240,240))
 	);
 }
 
