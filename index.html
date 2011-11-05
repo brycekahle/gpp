@@ -12,6 +12,7 @@
     var camera, scene, renderer, paddle, 
     mousex = 0.5, mousey = 0.5, mousexoffset = 0, mouseyoffset = 0,
     stats, container;
+    var score = 0;
     var balls = new Array();
     var paused = true;
   
@@ -108,10 +109,8 @@
         var reset = document.createElement('div');
         $('<div id="reset" style="display:none;">Reset</div>').appendTo($(container)).click(function() {
           for (i in balls) {
-              scene.remove(balls[i].mesh);
-              world.remove(balls[i]);
+            removeBall(balls[i]);
           }
-          balls.splice(0, balls.length);
           spawnBall();
         });
         
@@ -249,6 +248,12 @@
             this.mesh.position.y = this.y;
             this.mesh.position.z = this.z;
             
+            if (this.z > 0 || this.z < (-BOXDEPTH) || 
+                this.x > BOXHEIGHT / 2 || this.x < -BOXHEIGHT / 2 ||
+                this.y > BOXHEIGHT / 2 || this.y < -BOXHEIGHT / 2){
+                removeBall(this);
+            }
+            
             /*
             ball.KeyLight.position.x = this.x + ( WIDTH * 0.5 );
             ball.KeyLight.position.y = this.y + ( WIDTH * 0.5 );
@@ -287,16 +292,24 @@
             depth : 500
         });
 
-        block.events.on('contact', function(evt){
-          scene.remove(block.mesh);
-          world.remove(block);
-          updateScore();
-        }, false);
+        block.events.on('contact', function(){removeBlock(block);}, false);
         
         world.add(block);
 
         block.mesh = mesh;
         world.add(block);
+    }
+    
+    function removeBall(ball){
+        scene.remove(ball.mesh);
+        world.remove(ball);
+        balls.splice(balls.indexOf(ball), 1);
+    }
+
+    function removeBlock(block){
+        scene.remove(block.mesh);
+        world.remove(block);
+        updateScore();
     }
     
     function addWall(xrot, yrot, zrot, x, y, z, width, height, wallcolor) {
