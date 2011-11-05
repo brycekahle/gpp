@@ -37,11 +37,11 @@
       backlight: 0xFFFFFF
     };
     
-    var ballColors = {
-      red: 0xCC0000,
-      green: 0x00CC00,
-      blue: 0x0000CC
-    };
+    var ballColors = new Array(
+      0xCC0000,
+      0x00CC00,
+      0x0000CC
+    );
     
     // Colors are - Red, Light Red, Blue, Light Blue, Green, Light Green, Orange, Light Orange
     var blockColors = new Array( 
@@ -71,7 +71,7 @@
     var BOXDEPTH = 32 * HEIGHT, 
         BOXHEIGHT = 4 * HEIGHT;
     
-    var ballSize = WIDTH / 4;
+    var ballSize = WIDTH / 8;
     var lightDistance = {
       key: WIDTH * 1.25,
       fill: WIDTH * 1.1,
@@ -111,23 +111,38 @@
               world.remove(balls[i]);
           }
           balls.splice(0, balls.length);
-          addBall(ballColors.red, 0, 0, 0);
-        });        
+          spawnBall();
+        });
         
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         window.addEventListener('devicemotion', onDeviceMotion, false);
         
         createPaddle(WIDTH, HEIGHT);
-        addBall(ballColors.red, 0, 0, -100);
-        addBlock(0xffffff, 0, 0, 100-BOXDEPTH);
-        addBlock(0xffffff, -500, -500, 100-BOXDEPTH);
-        addBlock(0xffffff, 500, 500, 100-BOXDEPTH);
-        addBlock(0xffffff, -500, 500, 100-BOXDEPTH);
-        addBlock(0xffffff, 500, -500, 100-BOXDEPTH);
+        spawnBall();
+        var bColor = randomNumber(blockColors.length / 2) ;
+        for (var i=1; i <= 10; i++) {
+            var x = Math.min(Math.max(randomNumber(BOXHEIGHT) - (BOXHEIGHT / 2), -(BOXHEIGHT/2) + 250), BOXHEIGHT/2 - 250);
+            var y = Math.min(Math.max(randomNumber(BOXHEIGHT) - (BOXHEIGHT / 2), -(BOXHEIGHT/2) + 250), BOXHEIGHT/2 - 250);
+            addBlock(blockColors[bColor] + (i % 2), x, y, randomNumber(5000) - BOXDEPTH);
+        }
+        
+        //addBlock(blockColors[bColor], 0, 0, 1000-BOXDEPTH);
+        //addBlock(blockColors[bColor + 1], -500, -500, 1000-BOXDEPTH);
+        //addBlock(blockColors[bColor + 1], 500, 500, 1000-BOXDEPTH);
+        //addBlock(blockColors[bColor + 1], -500, 500, 1000-BOXDEPTH);
+        //addBlock(blockColors[bColor + 1], 500, -500, 1000-BOXDEPTH);
         
         // Teh Light!
         var ambientLight = new THREE.AmbientLight( ambientColors.light );
         //scene.add( ambientLight );
+    }
+    
+    function spawnBall() {
+        addBall(ballColors[randomNumber(ballColors.length)], 0, 0, 0);
+    }
+    
+    function randomNumber(num) {
+        return Math.floor(Math.random() * num);
     }
     
     function addBox(depth, height) {
@@ -207,7 +222,7 @@
             restitution : 1,
             radius : ballSize,
         });
-        ball.setVelocity(10, 5, -50);
+        ball.setVelocity(randomNumber(10) + 5, randomNumber(10) + 5, -(randomNumber(6) + 1) * 15);
         ball.mesh = mesh;
         world.add(ball);
         
@@ -281,10 +296,10 @@
     
     function addWall(xrot, yrot, zrot, x, y, z, width, height, wallcolor) {
         var geometry, material, mesh;
-        geometry = new THREE.PlaneGeometry(width, height, 1, 1);
+        geometry = new THREE.PlaneGeometry(width, height, 10, 1);
         material = new THREE.MeshLambertMaterial( { color: wallcolor, wireframe: false } );
 
-        mesh = new THREE.Mesh( geometry, material );      
+        mesh = new THREE.Mesh( geometry, material );
         mesh.rotation.x = xrot;
         mesh.rotation.y = yrot;
         mesh.rotation.z = zrot;
@@ -338,22 +353,6 @@
        
         renderer.render( scene, camera );
     }
-
-    function simple_moving_averager(period) {
-        var nums = [];
-        return function(num) {
-            nums.push(num);
-            if (nums.length > period)
-                nums.splice(0,1);  // remove the first element of the array
-            var sum = 0;
-            for (var i in nums)
-                sum += nums[i];
-            var n = period;
-            if (nums.length < period)
-                n = nums.length;
-            return(sum/n);
-        }
-    }    
     
 	$(function () {
 		$('#disableOverlay').css({ height: WINDOWHEIGHT, width: WINDOWWIDTH });
