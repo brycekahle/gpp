@@ -11,46 +11,37 @@
   <script type="text/javascript">
     var camera, scene, renderer, paddle, 
     mousex = 0.5, mousey = 0.5, mousexoffset = 0, mouseyoffset = 0,
-    stats, container, accelStats;
+    stats, container;
     var balls = new Array();
-    
-    var xaccel = 0, yaccel = 0, zaccel = 0;
-    var xv = 0, yv = 0, zv = 0;
-    var maxx = 0, maxy = 0, maxz = 0;
-    
-    var xma = simple_moving_averager(10);
-    var yma = simple_moving_averager(10);
-    var zma = simple_moving_averager(10);
-   
+  
     var WINDOWWIDTH = window.innerWidth,
     WINDOWHEIGHT = window.innerHeight;
 
-
-	// Set colors
-	var roomColors = {
-		top: 0x999999,
-		bottom: 0xdddddd,
-		left: 0xbbbbbb,
-		right: 0xaaaaaa,
-		back: 0xcccccc
-	}
-	
-	var ambientColors = {
-		light: 0xcccccc,
-		dark: 0x555555
-	}
-	
-	var lightColors = {
-		key: 0xFFFFFF,
-		fill: 0xFFFFFF,
-		backlight: 0xFFFFFF
-	}
-	
-	var ballColors = {
-		red: 0xCC0000,
-		green: 0x00CC00,
-		blue: 0x0000CC
-	}
+    // Set colors
+    var roomColors = {
+      top: 0x999999,
+      bottom: 0xdddddd,
+      left: 0xbbbbbb,
+      right: 0xaaaaaa,
+      back: 0xcccccc
+    };
+    
+    var ambientColors = {
+      light: 0xcccccc,
+      dark: 0x555555
+    };
+    
+    var lightColors = {
+      key: 0xFFFFFF,
+      fill: 0xFFFFFF,
+      backlight: 0xFFFFFF
+    };
+    
+    var ballColors = {
+      red: 0xCC0000,
+      green: 0x00CC00,
+      blue: 0x0000CC
+    };
     
     // Colors are - Red, Light Red, Blue, Light Blue, Green, Light Green, Orange, Light Orange
     var blockColors = new Array( 
@@ -81,11 +72,11 @@
         BOXHEIGHT = 4 * HEIGHT;
     
     var ballSize = WIDTH / 4;
-	var lightDistance = {
-		key: WIDTH * 1.25,
-		fill: WIDTH * 1.1,
-		backlight: WIDTH * 1.1
-	}
+    var lightDistance = {
+      key: WIDTH * 1.25,
+      fill: WIDTH * 1.1,
+      backlight: WIDTH * 1.1
+    };
 
     init();
     animate();
@@ -112,32 +103,31 @@
         stats.domElement.style.top = '0px';
         container.appendChild( stats.domElement );
         
+        
         var reset = document.createElement('div');
         $('<div id="reset">Reset</div>').appendTo($(container)).click(function() {
-          
-        });
-        
-        //accelStats = document.createElement('div');
-        //accelStats.style.position = 'absolute';
-        //accelStats.style.top = '0px';
-        //accelStats.style.right = '0px';
-        //$(accelStats).html("<div>X: <span id='xaccel'>0</span></div><div>Y: <span id='yaccel'>0</span></div><div>Z: <span id='zaccel'>0</span></div><div>t: <span id='time'>0</span></div>");
-        //container.appendChild(accelStats);
+          for (i in balls) {
+              scene.remove(balls[i].mesh);
+              world.remove(balls[i]);
+          }
+          balls.splice(0, balls.length);
+          addBall(ballColors.red, 0, 0, 0);
+        });        
         
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         window.addEventListener('devicemotion', onDeviceMotion, false);
         
         createPaddle(WIDTH, HEIGHT);
-        addBall(ballColors.red, 0, 0, 0);
+        addBall(ballColors.red, 0, 0, -100);
         addBlock(0xffffff, 0, 0, 100-BOXDEPTH);
         addBlock(0xffffff, -500, -500, 100-BOXDEPTH);
         addBlock(0xffffff, 500, 500, 100-BOXDEPTH);
         addBlock(0xffffff, -500, 500, 100-BOXDEPTH);
         addBlock(0xffffff, 500, -500, 100-BOXDEPTH);
-		
-		// Teh Light!
-		var ambientLight = new THREE.AmbientLight( ambientColors.light );
-		scene.add( ambientLight );
+        
+        // Teh Light!
+        var ambientLight = new THREE.AmbientLight( ambientColors.light );
+        //scene.add( ambientLight );
     }
     
     function addBox(depth, height) {
@@ -217,34 +207,37 @@
             restitution : 1,
             radius : ballSize,
         });
-        ball.setVelocity(10, 10, -50);
+        ball.setVelocity(10, 5, -50);
         ball.mesh = mesh;
         world.add(ball);
         
+        /*
         ball.KeyLight = new THREE.PointLight( lightColors.key );
-		ball.KeyLight.intensity = 100;
-		ball.KeyLight.distance = lightDistance.key;
-		scene.add( ball.KeyLight );
-		
-		ball.FillLight = new THREE.PointLight( lightColors.fill );
-		ball.FillLight.intensity = 60;
-		ball.FillLight.distance = lightDistance.fill;
-		scene.add( ball.FillLight );
-		
-		ball.BackLight = new THREE.PointLight( lightColors.backlight );
-		ball.BackLight.intensity = 60;
-		ball.BackLight.distance = lightDistance.backlight;
-		scene.add( ball.BackLight );
+        ball.KeyLight.intensity = 100;
+        ball.KeyLight.distance = lightDistance.key;
+        scene.add( ball.KeyLight );        
+        
+        ball.FillLight = new THREE.PointLight( lightColors.fill );
+        ball.FillLight.intensity = 60;
+        ball.FillLight.distance = lightDistance.fill;
+        scene.add( ball.FillLight );
+        
+        ball.BackLight = new THREE.PointLight( lightColors.backlight );
+        ball.BackLight.intensity = 60;
+        ball.BackLight.distance = lightDistance.backlight;
+        scene.add( ball.BackLight );
+        */
 
         ball.updatePosition = function () {
             this.mesh.position.x = this.x;
             this.mesh.position.y = this.y;
             this.mesh.position.z = this.z;
             
+            /*
             ball.KeyLight.position.x = this.x + ( WIDTH * 0.5 );
             ball.KeyLight.position.y = this.y + ( WIDTH * 0.5 );
             ball.KeyLight.position.z = this.z + ( WIDTH * 1 );
-
+            
             ball.FillLight.position.x = this.x - ( WIDTH * 0.5 );
             ball.FillLight.position.y = this.y + ( WIDTH * 0.5 );
             ball.FillLight.position.z = this.z + ( WIDTH * 0.75 );
@@ -252,6 +245,7 @@
             ball.BackLight.position.x = this.x;
             ball.BackLight.position.y = this.y + ( WIDTH * 0.3 );
             ball.BackLight.position.z = this.z - ( WIDTH * 1 );
+            */
         };
 
         balls.push(ball);
@@ -316,7 +310,7 @@
     }
     
     function onDeviceMotion(event) {
-        var xa = (event.accelerationIncludingGravity.x - 9.8) / 5.0; // 10 - normalize
+        var xa = (event.accelerationIncludingGravity.x) / 5.0; // 10 - normalize
         var ya = (event.accelerationIncludingGravity.y) / 5.0; // 5 - normalize
         var za = event.accelerationIncludingGravity.z;
       
@@ -339,10 +333,7 @@
         
         camera.position.x = Math.max(Math.min(newx, (BOXHEIGHT / 2) - (HEIGHT / 2)), -(BOXHEIGHT / 2) + (HEIGHT / 2));
         camera.position.y = Math.max(Math.min(newy, (BOXHEIGHT / 2) - (HEIGHT / 2)), -(BOXHEIGHT / 2) + (HEIGHT / 2));
-
-        paddle.x = camera.position.x;
-        paddle.y = camera.position.y;
-        
+       
         renderer.render( scene, camera );
     }
 
