@@ -13,6 +13,7 @@
     mousex = 0.5, mousey = 0.5, mousexoffset = 0, mouseyoffset = 0,
     stats, container;
     var balls = new Array();
+    var paused = false;
   
     var WINDOWWIDTH = window.innerWidth,
     WINDOWHEIGHT = window.innerHeight;
@@ -207,7 +208,7 @@
     function addBall(ballColor, x, y, z){
         var geometry, material, mesh;
         geometry = new THREE.SphereGeometry(ballSize);
-        material = new THREE.MeshLambertMaterial( { color: ballColor, wireframe: false } );
+        material = new THREE.MeshLambertMaterial( { color: ballColor, wireframe: false, opacity: 1 } );
 
         mesh = new THREE.Mesh( geometry, material );        
         mesh.position.x = x;
@@ -286,7 +287,11 @@
             depth : 500
         });
 
-        block.events.on('contact', function(evt){scene.remove(block.mesh);world.remove(block);}, false);
+        block.events.on('contact', function(evt){
+          scene.remove(block.mesh);
+          world.remove(block);
+          updateScore();
+        }, false);
         
         world.add(block);
 
@@ -308,6 +313,13 @@
         mesh.position.z = z;
         scene.add( mesh );
     }
+    
+    function updateScore() {
+        var scoreDisplay = $('#score');
+        var score = parseInt(scoreDisplay.text());
+        score++;
+        scoreDisplay.text(score);
+    }
 
     function animate() {
         paddle.x = camera.position.x;
@@ -321,9 +333,11 @@
         }
 		
         // Include examples/js/RequestAnimationFrame.js for cross-browser compatibility.
-        requestAnimationFrame( animate );
-        render();
-        stats.update();
+        if (!paused) { 
+          requestAnimationFrame( animate );
+          render();
+          stats.update();
+        }
     }
     
     function onDeviceMotion(event) {
@@ -366,8 +380,12 @@
 			$('#disableOverlay').hide();
 			$('#scoreBoard').show();
 			$('#reset').show();
-			$('#pause_btn').show();
+			$('#pause_btn').show();      
 		});
+    $('#pause_btn').click( function () {
+        paused = !paused;
+        if (!paused) requestAnimationFrame(animate);
+    });
 		$('#scoreBoard').css({ left: (WINDOWWIDTH/2)-(scoreBoardWidth/2) });
 	});
 	
