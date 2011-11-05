@@ -106,19 +106,20 @@
         stats.domElement.style.top = '0px';
         container.appendChild( stats.domElement );
         
-        /*
+        
         var reset = document.createElement('div');
         $('<div id="reset" style="display:none;">Reset</div>').appendTo($(container)).click(function() {
           for (i in balls) {
             removeBall(balls[i]);
           }
           
-          //for (b in blocks) { removeBlock(blocks[b]) }
-          scoreDisplay.text("0");
-          //spawnBlocks();
+          for (b in blocks) { removeBlock(blocks[b]) }
+          blocks.splice(0, blocks.length);
+          $('#score').text("0");
+          spawnBlocks();
           spawnBall();
         });
-        */
+        
         
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         window.addEventListener('devicemotion', onDeviceMotion, false);
@@ -314,7 +315,10 @@
             depth : 500
         });
 
-        block.events.on('contact', function(){removeBlock(block);}, false);
+        block.events.on('contact', function(){
+        removeBlock(block);
+        blocks.splice(blocks.indexOf(block), 1);
+        }, false);
         
         world.add(block);
 
@@ -334,8 +338,7 @@
     function removeBlock(block){
         scene.remove(block.shadow);
         scene.remove(block.mesh);
-        world.remove(block);
-        blocks.splice(blocks.indexOf(block), 1);
+        world.remove(block);        
         updateScore();
     }
     
