@@ -14,6 +14,7 @@
     stats, container;
     var score = 0;
     var balls = new Array();
+    var paused = false;
   
     var WINDOWWIDTH = window.innerWidth,
     WINDOWHEIGHT = window.innerHeight;
@@ -38,11 +39,11 @@
       backlight: 0xFFFFFF
     };
     
-    var ballColors = {
-      red: 0xCC0000,
-      green: 0x00CC00,
-      blue: 0x0000CC
-    };
+    var ballColors = new Array(
+      0xCC0000,
+      0x00CC00,
+      0x0000CC
+    );
     
     // Colors are - Red, Light Red, Blue, Light Blue, Green, Light Green, Orange, Light Orange
     var blockColors = new Array( 
@@ -72,7 +73,7 @@
     var BOXDEPTH = 32 * HEIGHT, 
         BOXHEIGHT = 4 * HEIGHT;
     
-    var ballSize = WIDTH / 4;
+    var ballSize = WIDTH / 8;
     var lightDistance = {
       key: WIDTH * 1.25,
       fill: WIDTH * 1.1,
@@ -106,27 +107,42 @@
         
         
         var reset = document.createElement('div');
-        $('<div id="reset">Reset</div>').appendTo($(container)).click(function() {
+        $('<div id="reset" style="display:none;">Reset</div>').appendTo($(container)).click(function() {
           for (i in balls) {
             removeBall(balls[i]);
           }
-          addBall(ballColors.red, 0, 0, 0);
-        });        
+          spawnBall();
+        });
         
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         window.addEventListener('devicemotion', onDeviceMotion, false);
         
         createPaddle(WIDTH, HEIGHT);
-        addBall(ballColors.red, 0, 0, -100);
-        addBlock(0xffffff, 0, 0, 100-BOXDEPTH);
-        addBlock(0xffffff, -500, -500, 100-BOXDEPTH);
-        addBlock(0xffffff, 500, 500, 100-BOXDEPTH);
-        addBlock(0xffffff, -500, 500, 100-BOXDEPTH);
-        addBlock(0xffffff, 500, -500, 100-BOXDEPTH);
+        spawnBall();
+        var bColor = randomNumber(blockColors.length / 2) ;
+        for (var i=1; i <= 10; i++) {
+            var x = Math.min(Math.max(randomNumber(BOXHEIGHT) - (BOXHEIGHT / 2), -(BOXHEIGHT/2) + 250), BOXHEIGHT/2 - 250);
+            var y = Math.min(Math.max(randomNumber(BOXHEIGHT) - (BOXHEIGHT / 2), -(BOXHEIGHT/2) + 250), BOXHEIGHT/2 - 250);
+            addBlock(blockColors[bColor] + (i % 2), x, y, randomNumber(5000) - BOXDEPTH);
+        }
+        
+        //addBlock(blockColors[bColor], 0, 0, 1000-BOXDEPTH);
+        //addBlock(blockColors[bColor + 1], -500, -500, 1000-BOXDEPTH);
+        //addBlock(blockColors[bColor + 1], 500, 500, 1000-BOXDEPTH);
+        //addBlock(blockColors[bColor + 1], -500, 500, 1000-BOXDEPTH);
+        //addBlock(blockColors[bColor + 1], 500, -500, 1000-BOXDEPTH);
         
         // Teh Light!
         var ambientLight = new THREE.AmbientLight( ambientColors.light );
         //scene.add( ambientLight );
+    }
+    
+    function spawnBall() {
+        addBall(ballColors[randomNumber(ballColors.length)], 0, 0, 0);
+    }
+    
+    function randomNumber(num) {
+        return Math.floor(Math.random() * num);
     }
     
     function addBox(depth, height) {
@@ -191,7 +207,7 @@
     function addBall(ballColor, x, y, z){
         var geometry, material, mesh;
         geometry = new THREE.SphereGeometry(ballSize);
-        material = new THREE.MeshLambertMaterial( { color: ballColor, wireframe: false } );
+        material = new THREE.MeshLambertMaterial( { color: ballColor, wireframe: false, opacity: 1 } );
 
         mesh = new THREE.Mesh( geometry, material );        
         mesh.position.x = x;
@@ -206,7 +222,7 @@
             restitution : 1,
             radius : ballSize,
         });
-        ball.setVelocity(10, 5, -50);
+        ball.setVelocity(randomNumber(10) + 5, randomNumber(10) + 5, -(randomNumber(6) + 1) * 15);
         ball.mesh = mesh;
         world.add(ball);
         
@@ -293,15 +309,15 @@
     function removeBlock(block){
         scene.remove(block.mesh);
         world.remove(block);
-        score++;
+        updateScore();
     }
     
     function addWall(xrot, yrot, zrot, x, y, z, width, height, wallcolor) {
         var geometry, material, mesh;
-        geometry = new THREE.PlaneGeometry(width, height, 1, 1);
+        geometry = new THREE.PlaneGeometry(width, height, 10, 1);
         material = new THREE.MeshLambertMaterial( { color: wallcolor, wireframe: false } );
 
-        mesh = new THREE.Mesh( geometry, material );      
+        mesh = new THREE.Mesh( geometry, material );
         mesh.rotation.x = xrot;
         mesh.rotation.y = yrot;
         mesh.rotation.z = zrot;
@@ -309,6 +325,13 @@
         mesh.position.y = y;
         mesh.position.z = z;
         scene.add( mesh );
+    }
+    
+    function updateScore() {
+        var scoreDisplay = $('#score');
+        var score = parseInt(scoreDisplay.text());
+        score++;
+        scoreDisplay.text(score);
     }
 
     function animate() {
@@ -323,9 +346,11 @@
         }
 		
         // Include examples/js/RequestAnimationFrame.js for cross-browser compatibility.
-        requestAnimationFrame( animate );
-        render();
-        stats.update();
+        if (!paused) { 
+          requestAnimationFrame( animate );
+          render();
+          stats.update();
+        }
     }
     
     function onDeviceMotion(event) {
@@ -355,38 +380,33 @@
        
         renderer.render( scene, camera );
     }
-
-    function simple_moving_averager(period) {
-        var nums = [];
-        return function(num) {
-            nums.push(num);
-            if (nums.length > period)
-                nums.splice(0,1);  // remove the first element of the array
-            var sum = 0;
-            for (var i in nums)
-                sum += nums[i];
-            var n = period;
-            if (nums.length < period)
-                n = nums.length;
-            return(sum/n);
-        }
-    }    
     
 	$(function () {
 		$('#disableOverlay').css({ height: WINDOWHEIGHT, width: WINDOWWIDTH });
 		var playBtnHeight = $('#play_btn').height();
 		var playBtnWidth = $('#play_btn').width();
+		var scoreBoardWidth = $('#scoreBoard').width();
 		$('#play_btn').css({ top: (WINDOWHEIGHT/2)-(playBtnHeight/2), left: (WINDOWWIDTH/2)-(playBtnWidth/2) });
 		$('#play_btn').click( function () {
 			animate();
 			$('#play_btn').hide();
 			$('#disableOverlay').hide();
+			$('#scoreBoard').show();
+			$('#reset').show();
+			$('#pause_btn').show();      
 		});
+    $('#pause_btn').click( function () {
+        paused = !paused;
+        if (!paused) requestAnimationFrame(animate);
+    });
+		$('#scoreBoard').css({ left: (WINDOWWIDTH/2)-(scoreBoardWidth/2) });
 	});
 	
   </script>
   <div id="disableOverlay"></div>
   <div id="play_btn">Play!</div>
+  <div id="pause_btn" style="display:none;">Pause</div>
+  <div id="scoreBoard" style="display:none;"><h3>Score</h3><div id="score">0</div></div>
 
 </body>
 </html>
