@@ -63,7 +63,7 @@
                 listener.apply(obj, arguments);
             }
             return this;
-        },
+        }
     });
 
     var clamp = function(left, right, value){
@@ -74,7 +74,7 @@
         type: ACCELERATOR,
         remove: function(){
             this.to_remove = true;
-        },
+        }
     });
 
     var handleContact = function(b1, b2, depth, xn, yn, zn, restitute){
@@ -135,7 +135,7 @@
                 x: 0,
                 y: 0,
                 z: 0,
-                density: 1,
+                density: 1
             }, args);
 
             this.id = body_ids++;
@@ -242,7 +242,7 @@
                 this.ay += y;
                 this.az += z;
             }
-        },
+        }
     });
 
     vphy = {
@@ -250,7 +250,7 @@
         types: {
             AABB            : AABB,
             SPHERE          : SPHERE,
-            ACCELERATOR     : ACCELERATOR,
+            ACCELERATOR     : ACCELERATOR
         },
         World: Class({
             __init__: function(){
@@ -375,7 +375,7 @@
                 for(var i=0, accelerator; accelerator=accelerators[i++];){
                     accelerator.perform(bodies, delta); // __doc__ passing delta to perform() thus accelerator may accelerate independantly of delta 
                 }
-            },
+            }
         }),
         LinearAccelerator: Class({
             __extends__: Accelerator,
@@ -389,7 +389,7 @@
                 for(var i=0, body; body=bodies[i++];){
                     body.accelerate(x, y, z); 
                 }
-            },
+            }
         }),
         AABB: Class({
             type: AABB,
@@ -397,7 +397,7 @@
             __extends__: Body,
             __init__: function(args){
                 var params = extend({
-                    width: 1, height: 1, depth: 1,
+                    width: 1, height: 1, depth: 1
                 }, args);
                 this.width = params.width;
                 this.height = params.height;
@@ -447,7 +447,7 @@
                     handleContact(this, b, radius-l, xn, yn, zn, restitute);
                     this.onContact(b);
                 }
-            },
+            }
         }),
         Sphere: Class({
             type: SPHERE,
@@ -455,7 +455,7 @@
             __extends__: Body,
             __init__: function(args){
                 var params = extend({
-                    radius: 1,
+                    radius: 1
                 }, args);
                 this.radius = params.radius;
                 this.init(params);
@@ -495,7 +495,7 @@
                     handleContact(b1, b2, target-l, xn, yn, zn, restitute);
                     b1.onContact(b2);
                 }
-            },
-        }),
+            }
+        })
     };
 })();
