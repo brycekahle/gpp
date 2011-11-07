@@ -6,6 +6,7 @@
   <script src="Three.js"></script>
   <script src="RequestAnimationFrame.js"></script>
   <script src="Stats.js"></script>
+  <script src="Detector.js"></script>
   
   <script src="physics.js"></script>
   <script type="text/javascript">
@@ -15,6 +16,7 @@
     var score = 0;
     var balls = new Array();
     var blocks = new Array();
+    var scoredBlocks = new Array();
     var paused = true;
   
     var WINDOWWIDTH = window.innerWidth,
@@ -67,8 +69,10 @@
     ASPECT = WIDTH / HEIGHT,
     NEAR = 0.1,
     FAR = 40000;
+	
+	var HASWEBGL = Detector.webgl;
     
-    var PI = 3.141596;
+    var PI = Math.PI;
     var MOVEFACTOR = 0.1, MOTIONFACTOR = 0.1;
     
     var BOXDEPTH = 32 * HEIGHT, 
@@ -96,7 +100,7 @@
         world.start(Date.now()/1000);
         addBox(BOXDEPTH, BOXHEIGHT);
         
-        renderer = new THREE.CanvasRenderer();
+        renderer = HASWEBGL ? new THREE.WebGLRenderer( { antialias: true } ) : new THREE.CanvasRenderer();
         renderer.setSize(WINDOWWIDTH, WINDOWHEIGHT);
 
         container.appendChild(renderer.domElement);
@@ -106,12 +110,10 @@
         stats.domElement.style.top = '0px';
         container.appendChild( stats.domElement );
         
-        
         var reset = document.createElement('div');
         $('<div id="reset" style="display:none;">Reset</div>').appendTo($(container)).click(function() {
           resetWorld();
-        });
-        
+        });        
         
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         window.addEventListener('devicemotion', onDeviceMotion, false);
@@ -119,37 +121,32 @@
         createPaddle(WIDTH, HEIGHT);
         spawnBall();
         spawnBlocks();
-        
-        //addBlock(blockColors[bColor], 0, 0, 1000-BOXDEPTH);
-        //addBlock(blockColors[bColor + 1], -500, -500, 1000-BOXDEPTH);
-        //addBlock(blockColors[bColor + 1], 500, 500, 1000-BOXDEPTH);
-        //addBlock(blockColors[bColor + 1], -500, 500, 1000-BOXDEPTH);
-        //addBlock(blockColors[bColor + 1], 500, -500, 1000-BOXDEPTH);
-        
+       
         // Teh Light!
-        var ambientLight = new THREE.AmbientLight( ambientColors.light );
-        //scene.add( ambientLight );
+        if (false) {
+          var ambientLight = new THREE.AmbientLight( ambientColors.light );
+          scene.add( ambientLight );
+        }
     }
     
     function resetWorld() {
-        for (i in balls) {
-            removeBall(balls[i]);
-          }
-          
-          for (b in blocks) { removeBlock(blocks[b]) }
-          blocks.splice(0, blocks.length);
-          $('#score').text("0");
-          spawnBlocks();
-          spawnBall();
+      for (i in balls) { removeBall(balls[i]); }
+      balls.length = 0;      
+      for (b in blocks) { removeBlock(blocks[b]) }
+      blocks.length = 0;
+      scoredBlocks.length = 0;
+      $('#score').text("0");
+      spawnBlocks();
+      spawnBall();
     }
     
     function spawnBlocks() {
-        var bColor = randomNumber(blockColors.length) / 2;
+        var bColor = randomNumber(blockColors.length / 2);
         for (var i=1; i <= 10; i++) {
             var x = Math.min(Math.max(randomNumber(BOXHEIGHT) - (BOXHEIGHT / 2), -(BOXHEIGHT/2) + 250), BOXHEIGHT/2 - 250);
             var y = Math.min(Math.max(randomNumber(BOXHEIGHT) - (BOXHEIGHT / 2), -(BOXHEIGHT/2) + 250), BOXHEIGHT/2 - 250);
             var z = randomNumber(5000) - BOXDEPTH;
-            addBlock(blockColors[bColor * 2] + (i % 2), x, y, z);            
+            addBlock(blockColors[bColor * 2 + (i % 2)], x, y, z);
         }
     }
     
@@ -233,7 +230,9 @@
     
     function addBall(ballColor, x, y, z){
         var geometry, material, mesh;
-        geometry = new THREE.SphereGeometry(ballSize);
+        var segmentWidth = (HASWEBGL) ? 16 : 8;
+        var segmentHeight = (HASWEBGL) ? 12 : 6;
+        geometry = new THREE.SphereGeometry(ballSize, segmentWidth, segmentHeight);
         material = new THREE.MeshLambertMaterial( { color: ballColor, wireframe: false, opacity: 1 } );
 
         mesh = new THREE.Mesh( geometry, material );        
@@ -253,7 +252,7 @@
         ball.mesh = mesh;
         world.add(ball);
         
-        /*
+        if (false) {
         ball.KeyLight = new THREE.PointLight( lightColors.key );
         ball.KeyLight.intensity = 100;
         ball.KeyLight.distance = lightDistance.key;
@@ -268,7 +267,7 @@
         ball.BackLight.intensity = 60;
         ball.BackLight.distance = lightDistance.backlight;
         scene.add( ball.BackLight );
-        */
+        }
 
         ball.updatePosition = function () {
             this.mesh.position.x = this.x;
@@ -279,7 +278,8 @@
                 this.x > BOXHEIGHT / 2 || this.x < -BOXHEIGHT / 2 ||
                 this.y > BOXHEIGHT / 2 || this.y < -BOXHEIGHT / 2){
                 removeBall(this);
-                resetWorld();
+                balls.splice(balls.indexOf(ball), 1);
+                if (balls.length == 0) resetWorld();
             }
             
             /*
@@ -321,12 +321,14 @@
         });
 
         block.events.on('contact', function(){
-        removeBlock(block);
-        blocks.splice(blocks.indexOf(block), 1);
+          removeBlock(block);
+          blocks.splice(blocks.indexOf(block), 1);
+          if (blocks.length == 0) {
+            spawnBlocks();
+            spawnBall();
+          }
         }, false);
         
-        world.add(block);
-
         block.mesh = mesh;
         world.add(block);
         
@@ -336,15 +338,14 @@
     
     function removeBall(ball){
         scene.remove(ball.mesh);
-        world.remove(ball);
-        balls.splice(balls.indexOf(ball), 1);
+        world.remove(ball);        
     }
 
     function removeBlock(block){
         scene.remove(block.shadow);
         scene.remove(block.mesh);
         world.remove(block);        
-        updateScore();
+        updateScore(block);
     }
     
     function addWall(xrot, yrot, zrot, x, y, z, width, height, wallcolor) {
@@ -362,11 +363,13 @@
         scene.add( mesh );
     }
     
-    function updateScore() {
+    function updateScore(block) {
+        if (scoredBlocks.indexOf(block) >= 0) return;
         var scoreDisplay = $('#score');
         var score = parseInt(scoreDisplay.text());
         score++;
         scoreDisplay.text(score);
+        scoredBlocks.push(block);
     }
 
     function animate() {
@@ -439,6 +442,9 @@
 			if (e.keyCode == '82') {
 				resetWorld();
 			}
+      if (e.keyCode == '66') {
+        spawnBall();
+      }
 		});
 		$('#scoreBoard').css({ left: (WINDOWWIDTH/2)-(scoreBoardWidth/2) });
 		function PauseGame() {
