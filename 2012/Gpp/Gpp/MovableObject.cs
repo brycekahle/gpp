@@ -31,11 +31,17 @@ namespace Gpp
 
         protected void UpdateAcceleration(TimeSpan elapsedTime)
         {
+            var resultDirectionalAcceleration = Vector2.Zero;
             foreach (var gameObject in Game1.GameObjects.Where(o => o != this))
             {
-                // kg*m/s/s = ((m*m*m)/kg/s/s)*(kg*kg)/(m*m)
-                var force = GravitationConstant*(gameObject.Mass*Mass)/(Vector2.DistanceSquared(gameObject.Position, Position));
+                // m/s/s = ((m*m*m)/kg/s/s)*(kg)/(m*m)
+                var acceleration = GravitationConstant*(gameObject.Mass)/(Vector2.DistanceSquared(gameObject.Position, Position));
+                var direction = (gameObject.Position - Position);
+                direction.Normalize();
+
+                resultDirectionalAcceleration += acceleration*direction;
             }
+            Acceleration += resultDirectionalAcceleration;
         }
 
         protected void UpdateVelocity(TimeSpan elapsedTime)
