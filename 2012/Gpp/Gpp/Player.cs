@@ -125,7 +125,9 @@ namespace Gpp
             var reticleTexture = Game.Content.Load<Texture2D>("aiming-reticle");
 
             var reticleAngle = -(float)AngleBetweenVectors2(new Vector2(0, 1), _aimingVector);
-            batch.Draw(reticleTexture, reticlePosition, null, Color.White, reticleAngle,
+
+            var reticleColor = new Color((_chargeAmount / MaxCharge), 0, 0);
+            batch.Draw(reticleTexture, reticlePosition, null, reticleColor, reticleAngle,
                        new Vector2((float)reticleTexture.Width / 2, (float)reticleTexture.Height / 2),
                        1.0f, SpriteEffects.None, 0);
             base.Draw(batch);
