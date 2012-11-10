@@ -3,22 +3,23 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace Gpp
 {
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game1 : Game
+    public class SupermassiveGame : Game
     {
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;        
-
         Texture2D _background;
 
         public List<GameObject> GameObjects { get; private set; }
+        List<Player> _players;
 
-        public Game1()
+        public SupermassiveGame()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -33,7 +34,11 @@ namespace Gpp
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+
             GameObjects = new List<GameObject>();
+            _players = new List<Player>() { 
+                new Player(this, PlayerIndex.One), 
+                new Player(this, PlayerIndex.Two) };
             base.Initialize();
         }
 

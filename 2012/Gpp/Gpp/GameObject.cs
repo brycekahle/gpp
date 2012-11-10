@@ -14,21 +14,23 @@ namespace Gpp
         /// </summary>
         public const double GravitationConstant = 6.673E-11;
 
-        public Game1 Game1 { get; private set; }
+        public SupermassiveGame Game { get; private set; }
 
         /// <summary>
         /// Meters from origin
         /// </summary>
         public Vector2 Position { get; protected set; }
 
+        public Vector2 Heading { get; protected set; }
+
         /// <summary>
         /// KG
         /// </summary>
         public double Mass { get; protected set; }
 
-        public GameObject(Game1 game1)
+        public GameObject(SupermassiveGame game)
         {
-            Game1 = game1;
+            Game = game;
         }
 
         public virtual void Update(TimeSpan elapsedTime)
