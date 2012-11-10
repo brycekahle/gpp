@@ -44,6 +44,9 @@ namespace Gpp
         /// </summary>
         protected override void LoadContent()
         {
+            var width = GraphicsDevice.Viewport.Width;
+            var height = GraphicsDevice.Viewport.Height;
+
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _background = Content.Load<Texture2D>("background");
@@ -53,7 +56,10 @@ namespace Gpp
                 new Player(this, PlayerIndex.One, _background, new Vector2(100, 100)), 
                 new Player(this, PlayerIndex.Two, _background, new Vector2(100, 200)) };
             GameObjects.AddRange(_players);
-            GameObjects.Add(new Planet(this, Content.Load<Texture2D>("Rock-Planet-Flat"), new Vector2(1920/2, 1080/2), 0.5f, 5E10f));
+
+            var planetTexture = Content.Load<Texture2D>("Rock-Planet-Flat");
+            var scale = (height * 0.3f) / planetTexture.Height;
+            GameObjects.Add(new Planet(this, planetTexture, new Vector2(width / 2, height / 2), scale, 5E10f));
 
             //GameObjects.Add(new MovableObject(this, _background, new Vector2(800, 500), 0.1f, 500000000000000));
             //GameObjects.Add(new MovableObject(this, _background, new Vector2(800, 1000), 0.1f, 500000000000000));
