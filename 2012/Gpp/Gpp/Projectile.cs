@@ -12,12 +12,16 @@ namespace Gpp
     {
         private Player _firingPlayer;
 
+        public float BaseDamage { get; private set; }
+        public float Damage { get { return BaseDamage; } }
+
         public Projectile(SupermassiveGame game, Player firingPlayer, Vector2 initialHeading, float firingPower)
             : base(game, game.ProjectileTexture, firingPlayer.Position + initialHeading * 100, 0.1f, 100)
         {
             _firingPlayer = firingPlayer;
             Heading = initialHeading;
             Velocity = Heading * firingPower;
+            BaseDamage = 10f;
         }
 
         public override void Update(TimeSpan elapsedTime)

@@ -26,6 +26,7 @@ namespace Gpp
         private const float JumpAcceleration = 5.0f; //m/s/s
         private const float ReticleDistance = 70.0f;
 
+        public float Health { get; private set; }
 
         public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, Vector2 position, Vector2 heading)
             : base(game, texture, position, 0.3f, 5000000)
@@ -33,6 +34,7 @@ namespace Gpp
             Heading = heading;
             _controlIndex = controlIndex;
             _aimingVector = Heading;
+            Health = 100f;
         }
 
         private void ReadGamepad(TimeSpan elapsedTime)
@@ -127,6 +129,11 @@ namespace Gpp
                        new Vector2((float)reticleTexture.Width / 2, (float)reticleTexture.Height / 2),
                        1.0f, SpriteEffects.None, 0);
             base.Draw(batch);
+        }
+
+        public void TakeDamage(Projectile projectile)
+        {
+            Health -= projectile.Damage;
         }
     }
 }

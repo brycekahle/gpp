@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -94,6 +95,18 @@ namespace Gpp
             var updateGameObjects = new List<GameObject>(GameObjects);
             foreach (var gameObject in updateGameObjects)
                 gameObject.Update(gameTime.ElapsedGameTime);
+
+            foreach (var player in _players.ToList())
+            {
+                foreach (var projectile in GameObjects.OfType<Projectile>().ToList())
+                {
+                    if (projectile.BoundingSphere.Intersects(player.BoundingSphere))
+                    {
+                        player.TakeDamage(projectile);
+                        GameObjects.Remove(projectile);
+                    }
+                }
+            }
 
             base.Update(gameTime);
         }
