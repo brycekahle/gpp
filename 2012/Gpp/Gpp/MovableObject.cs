@@ -54,7 +54,7 @@ namespace Gpp
 
         protected void UpdatePosition(TimeSpan elapsedTime)
         {
-            if (Game.GameObjects.Any(o => o != this && o.BoundingSphere.Intersects(BoundingSphere)))
+            if (Game.GameObjects.ToList().Any(o => !(o is MovableObject) && o.BoundingSphere.Intersects(BoundingSphere)))
             {
                 return;
             }
