@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Windows 8
+# Visual Studio Express 2012 for Windows Phone
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gpp", "Gpp\Gpp.csproj", "{ADC75DE3-9F3C-48DA-A930-8FE4BA391C7A}"
 EndProject
 Global
