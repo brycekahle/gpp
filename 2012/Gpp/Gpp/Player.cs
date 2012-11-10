@@ -26,7 +26,7 @@ namespace Gpp
         private const float ReticleDistance = 10.0f;
 
         public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, Vector2 position)
-            : base(game, texture, position, 0.05f, float.MaxValue)
+            : base(game, texture, position, 0.05f, 5000000)
         {
             _controlIndex = controlIndex;
         }
