@@ -23,15 +23,5 @@ namespace Gpp
             Velocity = Heading * firingPower;
             BaseDamage = 10f;
         }
-
-        public override void Update(TimeSpan elapsedTime)
-        {
-            base.Update(elapsedTime);
-        }
-
-        public override void Draw(SpriteBatch batch)
-        {
-            base.Draw(batch);
-        }
     }
 }

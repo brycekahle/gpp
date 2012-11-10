@@ -1,11 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
-using System;
 
 namespace Gpp
 {
@@ -53,7 +52,8 @@ namespace Gpp
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _background = Content.Load<Texture2D>("star_field_1");
-            var playerTexture = Content.Load<Texture2D>("player");
+            var playerOneTexture = Content.Load<Texture2D>("bloop-sprite");
+            var playerTwoTexture = Content.Load<Texture2D>("bloop-sprite");
 
             ProjectileTexture = Content.Load<Texture2D>("projectile");
             GameObjects = new List<GameObject>();
@@ -85,8 +85,8 @@ namespace Gpp
 
             var playerRadius =  (mainPlanetHeight / 2.0f) + 10f;
             _players = new List<Player> { 
-                new Player(this, PlayerIndex.One, playerTexture, playerRadius, new Vector2(-1, 0), centerScreen), 
-                new Player(this, PlayerIndex.Two, playerTexture, playerRadius, new Vector2(1, 0), centerScreen)
+                new Player(this, PlayerIndex.One, playerOneTexture, playerRadius, new Vector2(-1, 0), centerScreen), 
+                new Player(this, PlayerIndex.Two, playerTwoTexture, playerRadius, new Vector2(1, 0), centerScreen)
             };
             GameObjects.AddRange(_players);
 
@@ -158,7 +158,7 @@ namespace Gpp
             _spriteBatch.Begin();
             _spriteBatch.Draw(_background, new Rectangle(0, 0, 1920, 1080), Color.White);
             foreach (var gameObject in GameObjects)
-                gameObject.Draw(_spriteBatch);
+                gameObject.Draw(_spriteBatch, gameTime.ElapsedGameTime);
 
             _spriteBatch.End();
 

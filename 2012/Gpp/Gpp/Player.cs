@@ -76,7 +76,14 @@ namespace Gpp
             var rightMovementVector = Vector2.TransformNormal(Heading, Matrix.CreateRotationZ((float)-Math.PI / 2.0f));
 
             float movementRotate = 0.0f;
-            if (_isCharging || leftStickX == 0)
+            if (leftStickX == 0)
+            {
+                SetAnimation(Animation.Default);
+                // cancel out left and right movement velocities
+                //Velocity -= Vector2.Dot(Velocity, leftMovementVector) * leftMovementVector;
+                //Velocity -= Vector2.Dot(Velocity, rightMovementVector) * rightMovementVector;
+            }
+            else if (_isCharging)
             {
                 // cancel out left and right movement velocities
                 //Velocity -= Vector2.Dot(Velocity, leftMovementVector) * leftMovementVector;
@@ -91,6 +98,11 @@ namespace Gpp
                 if (Math.Abs(newHeading.X) < 0.3)
                 {
                     newHeading = Heading;
+                    SetAnimation(Animation.Default);
+                }
+                else
+                {
+                    SetAnimation(Animation.Walking);
                 }
                 Heading = newHeading;
 
@@ -122,12 +134,14 @@ namespace Gpp
                 if (_isCharging)
                 {
                     Fire();
+                    SetAnimation(Animation.Default);
                 }
             }
             else
             {
                 _isCharging = true;
                 _chargeAmount = Math.Min(_chargeAmount + (ChargeRate * (float)elapsedTime.TotalSeconds), MaxCharge);
+                SetAnimation(Animation.Squatting);
             }
         }
 
@@ -146,7 +160,7 @@ namespace Gpp
             base.Update(elapsedTime);
         }
 
-        public override void Draw(SpriteBatch batch)
+        public override void Draw(SpriteBatch batch, TimeSpan elapsedTime)
         {
             var reticlePosition = Position + (_aimingVector * ReticleDistance);
             var reticleTexture = Game.Content.Load<Texture2D>("aiming-reticle");
@@ -159,7 +173,7 @@ namespace Gpp
             batch.Draw(reticleTexture, reticlePosition, new Rectangle(0, 0, reticleTexture.Width, (int)((_chargeAmount / MaxCharge) * reticleTexture.Height)), Color.White, reticleAngle,
                        new Vector2((float)reticleTexture.Width / 2, (float)reticleTexture.Height / 2),
                        1.0f, SpriteEffects.None, 0);
-            base.Draw(batch);
+            base.Draw(batch, elapsedTime);
         }
 
         protected override void UpdateAcceleration(TimeSpan elapsedTime)

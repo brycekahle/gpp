@@ -130,6 +130,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animation.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="MovableObject.cs" />
     <Compile Include="Planet.cs" />
@@ -169,6 +170,18 @@
     </Content>
     <Content Include="..\..\ContentGame\ContentGame\ContentGame\bin\Windows Phone\Debug\Content\star_field_1.xnb">
       <Link>Content\star_field_1.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ContentGame\ContentGame\ContentGame\bin\Windows Phone\Debug\Content\andy-projectile.xnb">
+      <Link>Content\andy-projectile.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ContentGame\ContentGame\ContentGame\bin\Windows Phone\Debug\Content\bloop-projectile.xnb">
+      <Link>Content\bloop-projectile.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ContentGame\ContentGame\ContentGame\bin\Windows Phone\Debug\Content\bloop-sprite.xnb">
+      <Link>Content\bloop-sprite.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Gpp_TemporaryKey.pfx" />
