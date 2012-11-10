@@ -49,17 +49,17 @@ namespace Gpp
 
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _background = Content.Load<Texture2D>("background");
+            _background = Content.Load<Texture2D>("star_field_1");
             var playerTexture = Content.Load<Texture2D>("player");
 
-            ProjectileTexture = Content.Load<Texture2D>("background");
+            ProjectileTexture = Content.Load<Texture2D>("projectile");
             GameObjects = new List<GameObject>();            
 
             var planetTexture = Content.Load<Texture2D>("Rock-Planet-Flat");
             var planetHeight = (height * 0.3f);
             var scale = planetHeight / planetTexture.Height;
             var centerScreen = new Vector2(width / 2, height / 2);
-            GameObjects.Add(new Planet(this, planetTexture, centerScreen, scale, 5E10f));
+            GameObjects.Add(new Planet(this, planetTexture, centerScreen, scale, 1E15f));
 
             _players = new List<Player> { 
                 new Player(this, PlayerIndex.One, playerTexture, centerScreen + new Vector2(-planetHeight/2, 0), new Vector2(-1, 0)), 
@@ -91,7 +91,8 @@ namespace Gpp
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            foreach (var gameObject in GameObjects)
+            var updateGameObjects = new List<GameObject>(GameObjects);
+            foreach (var gameObject in updateGameObjects)
                 gameObject.Update(gameTime.ElapsedGameTime);
 
             base.Update(gameTime);
@@ -106,7 +107,7 @@ namespace Gpp
             GraphicsDevice.Clear(Color.Gray);
 
             _spriteBatch.Begin();
-            //_spriteBatch.Draw(_background, new Rectangle(0, 0, 1920, 1080), Color.White);
+            _spriteBatch.Draw(_background, new Rectangle(0, 0, 1920, 1080), Color.White);
             foreach (var gameObject in GameObjects)
                 gameObject.Draw(_spriteBatch);
 

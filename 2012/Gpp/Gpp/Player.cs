@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,12 +19,12 @@ namespace Gpp
 
         private Vector2 _aimingVector;
 
-        private const float ChargeRate = 1.0f; // m/s
-        private const float AimingRotateRate = 1.5f; // radians / s
-        private const float MaxCharge = 5.0f;
+        private const float ChargeRate = 100.0f; // m/s
+        private const float AimingRotateRate = 3.0f; // radians / s
+        private const float MaxCharge = 500.0f;
         private const float MovementSpeed = 1.0f; // m/s
         private const float JumpAcceleration = 5.0f; //m/s/s
-        private const float ReticleDistance = 50.0f;
+        private const float ReticleDistance = 70.0f;
 
 
         public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, Vector2 position, Vector2 heading)
@@ -81,7 +82,7 @@ namespace Gpp
 
             var rightStickX = state.ThumbSticks.Right.X;
             // left is negative, but that means positive radians
-            _aimingVector = Vector2.TransformNormal(_aimingVector, Matrix.CreateRotationZ(-rightStickX * (AimingRotateRate * (float)elapsedTime.TotalSeconds)));
+            _aimingVector = Vector2.TransformNormal(_aimingVector, Matrix.CreateRotationZ(rightStickX * (AimingRotateRate * (float)elapsedTime.TotalSeconds)));
         }
 
         private void ReadTrigger(GamePadState state, TimeSpan elapsedTime)

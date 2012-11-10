@@ -13,7 +13,7 @@ namespace Gpp
         private Player _firingPlayer;
 
         public Projectile(SupermassiveGame game, Player firingPlayer, Vector2 initialHeading, float firingPower)
-            : base(game, game.ProjectileTexture, firingPlayer.Position, 1, 100)
+            : base(game, game.ProjectileTexture, firingPlayer.Position + initialHeading * 100, 0.1f, 100)
         {
             _firingPlayer = firingPlayer;
             Heading = initialHeading;
