@@ -23,6 +23,7 @@ namespace Gpp
         private const float MaxCharge = 5.0f;
         private const float MovementSpeed = 1.0f; // m/s
         private const float JumpAcceleration = 5.0f; //m/s/s
+        private const float ReticleDistance = 10.0f;
 
         public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, Vector2 position)
             : base(game, texture, position, 0.05f, float.MaxValue)
@@ -103,7 +104,7 @@ namespace Gpp
             Game.GameObjects.Add(proj);
 
             _isCharging = false;
-            _chargeAmount = 1;
+            _chargeAmount = 0;
         }
 
         public override void Update(TimeSpan elapsedTime)
@@ -114,6 +115,11 @@ namespace Gpp
 
         public override void Draw(SpriteBatch batch)
         {
+            var reticlePosition = Position + (_aimingVector * ReticleDistance);
+            var reticleTexture = Game.Content.Load<Texture2D>("aiming-reticle");            
+            batch.Draw(reticleTexture, reticlePosition, null, Color.White, 0,
+                       new Vector2((float)reticleTexture.Width / 2, (float)reticleTexture.Height / 2),
+                       1.0f, SpriteEffects.None, 0);
             base.Draw(batch);
         }
     }

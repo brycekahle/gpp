@@ -53,9 +53,11 @@ namespace Gpp
                 new Player(this, PlayerIndex.One, _background, new Vector2(100, 100)), 
                 new Player(this, PlayerIndex.Two, _background, new Vector2(100, 200)) };
             GameObjects.AddRange(_players);
-            GameObjects.Add(new MovableObject(this, _background, new Vector2(800, 500), 0.1f, 500000000000000));
-            GameObjects.Add(new MovableObject(this, _background, new Vector2(800, 1000), 0.1f, 500000000000000));
-            GameObjects.Add(new MovableObject(this, _background, new Vector2(200, 750), 0.05f, 300000));
+            GameObjects.Add(new Planet(this, Content.Load<Texture2D>("Rock-Planet-Flat"), new Vector2(1920/2, 1080/2), 0.5f, 5E10f));
+
+            //GameObjects.Add(new MovableObject(this, _background, new Vector2(800, 500), 0.1f, 500000000000000));
+            //GameObjects.Add(new MovableObject(this, _background, new Vector2(800, 1000), 0.1f, 500000000000000));
+            //GameObjects.Add(new MovableObject(this, _background, new Vector2(200, 750), 0.05f, 300000));
         }
 
         /// <summary>
@@ -89,10 +91,10 @@ namespace Gpp
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_background, new Rectangle(0, 0, 1920, 1080), Color.White);
+            //_spriteBatch.Draw(_background, new Rectangle(0, 0, 1920, 1080), Color.White);
             foreach (var gameObject in GameObjects)
                 gameObject.Draw(_spriteBatch);
 
