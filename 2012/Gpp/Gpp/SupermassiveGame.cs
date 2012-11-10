@@ -21,6 +21,7 @@ namespace Gpp
 
         public List<GameObject> GameObjects { get; private set; }
         List<Player> _players;
+        Planet _mainPlanet;
 
         public SupermassiveGame()
         {
@@ -58,7 +59,7 @@ namespace Gpp
             GameObjects = new List<GameObject>();
             var centerScreen = new Vector2(width / 2, height / 2);
             var mainPlanetHeight = height * 0.3f;
-            AddPlanet("Green-Planet", 0.5f, centerScreen, height, 5E13f, 0.47f);
+            _mainPlanet = AddPlanet("Green-Planet", 0.5f, centerScreen, height, 5E13f, 0.47f);
             //AddPlanet("Rock-Planet-Flat", 0.3f, centerScreen, height, 5E13f, 0.8f);
 
             var rand = new Random();
@@ -81,13 +82,15 @@ namespace Gpp
             //GameObjects.Add(new MovableObject(this, _background, new Vector2(200, 750), 0.05f, 300000));
         }
 
-        private void AddPlanet(string textureName, float scale, Vector2 origin, int displayHeight, float mass, float boundingSpherePercent)
+        private Planet AddPlanet(string textureName, float scale, Vector2 origin, int displayHeight, float mass, float boundingSpherePercent)
         {
-            var planet = Content.Load<Texture2D>(textureName);
+            var planetTexture = Content.Load<Texture2D>(textureName);
             var planetHeight = (displayHeight * scale);
-            var displayScale = planetHeight / planet.Height;
+            var displayScale = planetHeight / planetTexture.Height;
 
-            GameObjects.Add(new Planet(this, planet, origin, displayScale, mass, boundingSpherePercent));
+            var planet = new Planet(this, planetTexture, origin, displayScale, mass, boundingSpherePercent);
+            GameObjects.Add(planet);
+            return planet;
         }
 
         /// <summary>
@@ -123,7 +126,7 @@ namespace Gpp
                         if (player != null) player.TakeDamage(projectile);
 
                         var planet = gameObject as Planet;
-                        if (planet != null) planet.TakeDamage(projectile);
+                        if (planet != null && planet != _mainPlanet) planet.TakeDamage(projectile);
                         GameObjects.Remove(projectile);
                     }
                 }

@@ -102,7 +102,16 @@ namespace Gpp
             var rightStickX = state.ThumbSticks.Right.X;
             // left is negative, but that means positive radians
             var aimRotate = rightStickX * (AimingRotateRate * (float)elapsedTime.TotalSeconds);
-            _aimingVector = Vector2.TransformNormal(_aimingVector, Matrix.CreateRotationZ(aimRotate + movementRotate));
+            var newAimingVector = Vector2.TransformNormal(_aimingVector, Matrix.CreateRotationZ(aimRotate + movementRotate));
+
+            //var checkRightVector = Vector2.Dot(newAimingVector, Vector2.TransformNormal(Heading, Matrix.CreateRotationZ((float)-Math.PI / 2.0f)));
+            //var checkLeftVector = Vector2.Dot(newAimingVector, Vector2.TransformNormal(Heading, Matrix.CreateRotationZ((float)Math.PI / 2.0f)));
+            //if (checkRightVector > 0.99 || checkLeftVector > 0.99)
+            //{
+            //    newAimingVector = _aimingVector;
+            //}
+
+            _aimingVector = newAimingVector;
         }
 
         private void ReadTrigger(GamePadState state, TimeSpan elapsedTime)
