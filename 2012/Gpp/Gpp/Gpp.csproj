@@ -134,6 +134,7 @@
     <Compile Include="MovableObject.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Projectile.cs" />
     <Compile Include="SupermassiveGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
