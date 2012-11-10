@@ -97,6 +97,7 @@ namespace Gpp
                 // if crossing vertical boundary
                 if (Math.Abs(newHeading.X) < 0.3)
                 {
+                    movementRotate = 0;
                     newHeading = Heading;
                     SetAnimation(Animation.Default);
                 }
