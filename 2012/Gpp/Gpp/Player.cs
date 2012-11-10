@@ -21,7 +21,7 @@ namespace Gpp
         private Vector2 _planetCenter;
         private float _planetRadius;
 
-        private const float ChargeRate = 100.0f; // m/s
+        private const float ChargeRate = 200.0f; // m/s
         private const float AimingRotateRate = 3.0f; // radians / s
         private const float MaxCharge = 500.0f;
         private const float MovementSpeed = 100.0f; // m/s
@@ -153,8 +153,10 @@ namespace Gpp
 
             var reticleAngle = -(float)AngleBetweenVectors2(new Vector2(0, 1), _aimingVector);
 
-            var reticleColor = new Color((_chargeAmount / MaxCharge), 0, 0);
-            batch.Draw(reticleTexture, reticlePosition, null, reticleColor, reticleAngle,
+            batch.Draw(reticleTexture, reticlePosition, null, Color.Black, reticleAngle,
+                       new Vector2((float)reticleTexture.Width / 2, (float)reticleTexture.Height / 2),
+                       1.0f, SpriteEffects.None, 0);
+            batch.Draw(reticleTexture, reticlePosition, new Rectangle(0, 0, reticleTexture.Width, (int)((_chargeAmount / MaxCharge) * reticleTexture.Height)), Color.White, reticleAngle,
                        new Vector2((float)reticleTexture.Width / 2, (float)reticleTexture.Height / 2),
                        1.0f, SpriteEffects.None, 0);
             base.Draw(batch);

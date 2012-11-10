@@ -60,15 +60,28 @@ namespace Gpp
             var centerScreen = new Vector2(width / 2, height / 2);
             var mainPlanetHeight = height * 0.3f;
             _mainPlanet = AddPlanet("Green-Planet", 0.5f, centerScreen, height, 5E13f, 0.47f);
+            GameObjects.Add(_mainPlanet);
             //AddPlanet("Rock-Planet-Flat", 0.3f, centerScreen, height, 5E13f, 0.8f);
 
-            var rand = new Random();
-            for (int i = 0; i < 4; i++)
-            {
-                var origin = new Vector2(rand.Next(width), rand.Next(height));
-                //AddPlanet("Green-Planet", 0.25f, origin, height, 1E13f, 0.5f);
-                AddPlanet("Rock-Planet-Flat", 0.15f, origin, height, 1E13f, 0.8f);
-            }
+            // add planets randomly
+            //var rand = new Random();
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    Planet planet;
+            //    do
+            //    {
+            //        var origin = new Vector2(rand.Next(width), rand.Next(height));
+            //        planet = AddPlanet("Rock-Planet-Flat", 0.15f, origin, height, 1E13f, 0.8f);
+            //    }
+            //    while(GameObjects.OfType<Planet>().Any(p => p.BoundingSphere.Transform(Matrix.CreateScale(2.0f)).Intersects(planet.BoundingSphere)));
+            //    //;
+            //    GameObjects.Add(planet);
+            //}
+            GameObjects.Add(AddPlanet("Green-Planet", 0.25f, new Vector2(width * 0.1f, height * 0.1f), height, 1E13f, 0.5f));
+            GameObjects.Add(AddPlanet("Green-Planet", 0.25f, new Vector2(width * 0.8f, height * 0.2f), height, 1E13f, 0.5f));
+            GameObjects.Add(AddPlanet("Green-Planet", 0.25f, new Vector2(width * 0.3f, height * 0.7f), height, 1E13f, 0.5f));
+            GameObjects.Add(AddPlanet("Green-Planet", 0.25f, new Vector2(width * 0.9f, height * 0.6f), height, 1E13f, 0.5f));
+
 
             var playerRadius =  (mainPlanetHeight / 2.0f) + 10f;
             _players = new List<Player> { 
@@ -89,7 +102,6 @@ namespace Gpp
             var displayScale = planetHeight / planetTexture.Height;
 
             var planet = new Planet(this, planetTexture, origin, displayScale, mass, boundingSpherePercent);
-            GameObjects.Add(planet);
             return planet;
         }
 
