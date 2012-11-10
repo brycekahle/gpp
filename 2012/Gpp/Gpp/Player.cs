@@ -13,6 +13,7 @@ namespace Gpp
         private PlayerIndex _controlIndex;
         private bool _isCharging;
         private float _chargeAmount;
+        private bool _isJumping;
 
         private Vector2 _aimingVector;
 
@@ -20,6 +21,7 @@ namespace Gpp
         private const float AimingRotateRate = 1.5f; // radians / s
         private const float MaxCharge = 5.0f;
         private const float MovementSpeed = 1.0f; // m/s
+        private const float JumpAcceleration = 5.0f; //m/s/s
 
         public Player(SupermassiveGame game, PlayerIndex controlIndex)
             : base(game)
@@ -32,6 +34,26 @@ namespace Gpp
             var state = GamePad.GetState(_controlIndex);
             ReadTrigger(state, elapsedTime);
             ReadSticks(state, elapsedTime);
+            ReadButtons(state, elapsedTime);
+        }
+
+        private void ReadButtons(GamePadState state, TimeSpan elapsedTime)
+        {
+            // handle jumping
+            var jump = state.Buttons.A == ButtonState.Pressed;
+            if (jump)
+            {
+                if (!_isCharging && !_isJumping && 
+                    Vector2.Dot(Velocity, Heading) <= 0f) // not moving upwards
+                {
+                    Acceleration += Heading * (JumpAcceleration * (float)elapsedTime.TotalSeconds);
+                    _isJumping = true;
+                }
+            }
+            else
+            {
+                _isJumping = false;
+            }
         }
 
         private void ReadSticks(GamePadState state, TimeSpan elapsedTime)
