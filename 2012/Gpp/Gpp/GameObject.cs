@@ -33,6 +33,8 @@ namespace Gpp
 
         private readonly Texture2D _texture;
 
+        public BoundingSphere BoundingSphere { get; protected set; }
+
         public GameObject(SupermassiveGame game, Texture2D texture, Vector2 position, float scale, float mass)
         {
             Game = game;
@@ -40,6 +42,7 @@ namespace Gpp
             Position = position;
             _scale = scale;
             Mass = mass;
+            BoundingSphere = GetBoundingSphere();
         }
 
         public virtual void Update(TimeSpan elapsedTime)
@@ -57,9 +60,15 @@ namespace Gpp
                        _scale, SpriteEffects.None, 0);
         }
 
+
         public double AngleBetweenVectors2(Vector2 v1, Vector2 v2)
         {
             return ((v1.X - v2.X) > 0 ? -1 : 1) * (float)Math.Acos((double)Vector2.Dot(Vector2.Normalize(v1), Vector2.Normalize(v2)));
+        }
+
+        protected BoundingSphere GetBoundingSphere()
+        {
+            return new BoundingSphere(new Vector3(Position.X, Position.Y, 0), _scale*_texture.Width/2f);
         }
     }
 }

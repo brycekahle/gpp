@@ -27,6 +27,7 @@ namespace Gpp
             UpdateAcceleration(elapsedTime);
             UpdateVelocity(elapsedTime);
             UpdatePosition(elapsedTime);
+            BoundingSphere = GetBoundingSphere();
             base.Update(elapsedTime);
         }
 
@@ -53,6 +54,10 @@ namespace Gpp
 
         protected void UpdatePosition(TimeSpan elapsedTime)
         {
+            if (Game.GameObjects.Any(o => o != this && o.BoundingSphere.Intersects(BoundingSphere)))
+            {
+                return;
+            }
             // m = (m/s) * s
             Position += Velocity * (float)elapsedTime.TotalSeconds;
         }

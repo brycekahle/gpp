@@ -25,8 +25,9 @@ namespace Gpp
         private const float JumpAcceleration = 5.0f; //m/s/s
         private const float ReticleDistance = 50.0f;
 
+
         public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, Vector2 position, Vector2 heading)
-            : base(game, texture, position, 0.3f, float.MaxValue)
+            : base(game, texture, position, 0.3f, 5000000)
         {
             Heading = heading;
             _controlIndex = controlIndex;
