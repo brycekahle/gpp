@@ -35,6 +35,12 @@ namespace Gpp
 
         public BoundingSphere BoundingSphere { get; protected set; }
 
+        private Animation _currentAnimation = Animation.Default;
+        private double _timeOnAnimation = 0;
+        private int _frameWidth = 200;
+        private int _frameHeight = 200;
+        private double _timePerFrame = 0.033f;
+
         public GameObject(SupermassiveGame game, Texture2D texture, Vector2 position, float scale, float mass)
         {
             Game = game;
@@ -50,16 +56,50 @@ namespace Gpp
             
         }
 
-        public virtual void Draw(SpriteBatch batch)
+        public void SetAnimation(Animation animation)
+        {
+            _currentAnimation = animation;
+            _timeOnAnimation = 0;
+        }
+
+        public virtual void Draw(SpriteBatch batch, TimeSpan elapsedTime)
         {
             var headingAngle = (float)AngleBetweenVectors2(new Vector2(0, -1), Heading);
             if (float.IsNaN(headingAngle)) headingAngle = 0;
 
-            batch.Draw(_texture, Position, null, Color.White, headingAngle,
-                       new Vector2((float) _texture.Width/2, (float) _texture.Height/2),
-                       _scale, SpriteEffects.None, 0);
+            if (!(this is Player))
+            {
+                batch.Draw(_texture, Position, null, Color.White, headingAngle,
+                           new Vector2((float)_texture.Width / 2, (float)_texture.Height / 2),
+                           _scale, SpriteEffects.None, 0);
+            }
+            else
+            {
+                _timeOnAnimation += elapsedTime.TotalSeconds;
+                var currentFrame = (int)(_timeOnAnimation/_timePerFrame) % GetFrameCount();
+                batch.Draw(_texture,
+                           new Rectangle((int) Position.X - _frameWidth/2, (int) Position.Y - _frameHeight/2,
+                                         _frameWidth, _frameHeight),
+                           new Rectangle(currentFrame*_frameWidth, (int)_currentAnimation*_frameHeight,
+                                         _frameWidth, _frameHeight),
+                           Color.White, headingAngle, new Vector2((float) _frameWidth/2, (float) _frameHeight/2),
+                           SpriteEffects.None, 0);
+            }
         }
 
+        private int GetFrameCount()
+        {
+            switch (_currentAnimation)
+            {
+                case Animation.Default:
+                    return 1;
+                case Animation.Walking:
+                    return 8;
+                case Animation.Squatting:
+                    return 3;
+            }
+            return 1;
+        }
 
         public double AngleBetweenVectors2(Vector2 v1, Vector2 v2)
         {
