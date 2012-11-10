@@ -10,10 +10,25 @@ namespace Gpp
 {
     class Planet : GameObject
     {
-        public Planet(SupermassiveGame game, Texture2D texture, Vector2 position, float scale, float mass, BoundingSphere bounds)
+        private float _boundingPercentage;
+
+        public Planet(SupermassiveGame game, Texture2D texture, Vector2 position, float scale, float mass, float boundingPercentage)
             : base(game, texture, position, scale, mass)
         {
-            BoundingSphere = bounds;
+            _boundingPercentage = boundingPercentage;
+            BoundingSphere = GetBoundingSphere();
+        }
+
+        protected override BoundingSphere GetBoundingSphere()
+        {
+            return new BoundingSphere(new Vector3(Position.X, Position.Y, 0), (_scale * _texture.Height * _boundingPercentage) / 2f);
+        }
+
+        public void TakeDamage(Projectile projectile)
+        {
+            Mass *= 1.1f;
+            _scale *= 1.1f;
+            BoundingSphere = GetBoundingSphere();
         }
     }
 }

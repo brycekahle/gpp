@@ -38,6 +38,7 @@ namespace Gpp
             {
                 // m/s/s = ((m*m*m)/kg/s/s)*(kg)/(m*m)
                 var acceleration = GravitationConstant*(gameObject.Mass)/(Vector2.DistanceSquared(gameObject.Position, Position));
+                //var acceleration = GravitationConstant * (gameObject.Mass) / ((float)Math.Atan(Vector2.Distance(gameObject.Position, Position)));
                 var direction = (gameObject.Position - Position);
                 direction.Normalize();
 

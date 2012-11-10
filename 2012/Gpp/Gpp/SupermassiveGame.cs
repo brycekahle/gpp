@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System;
 
 namespace Gpp
 {
@@ -54,24 +55,38 @@ namespace Gpp
             var playerTexture = Content.Load<Texture2D>("player");
 
             ProjectileTexture = Content.Load<Texture2D>("projectile");
-            GameObjects = new List<GameObject>();            
-
-            var planetTexture = Content.Load<Texture2D>("Rock-Planet-Flat");
-            var planetHeight = (height * 0.3f);
-            var scale = planetHeight / planetTexture.Height;
+            GameObjects = new List<GameObject>();
             var centerScreen = new Vector2(width / 2, height / 2);
-            GameObjects.Add(new Planet(this, planetTexture, centerScreen, scale, 1E15f,
-                new BoundingSphere(new Vector3(centerScreen.X, centerScreen.Y, 0), (planetHeight * 0.8f) / 2f)));
+            var mainPlanetHeight = height * 0.3f;
+            AddPlanet("Green-Planet", 0.5f, centerScreen, height, 5E13f, 0.48f);
+            //AddPlanet("Rock-Planet-Flat", 0.3f, centerScreen, height, 5E13f, 0.8f);
+
+            var rand = new Random();
+            for (int i = 0; i < 4; i++)
+            {
+                var origin = new Vector2(rand.Next(width), rand.Next(height));
+                //AddPlanet("Green-Planet", 0.25f, origin, height, 1E13f, 0.5f);
+                AddPlanet("Rock-Planet-Flat", 0.15f, origin, height, 1E13f, 0.8f);
+            }
 
             _players = new List<Player> { 
-                new Player(this, PlayerIndex.One, playerTexture, centerScreen + new Vector2(-planetHeight/2, 0), new Vector2(-1, 0)), 
-                new Player(this, PlayerIndex.Two, playerTexture, centerScreen + new Vector2(planetHeight/2, 0), new Vector2(1, 0))
+                new Player(this, PlayerIndex.One, playerTexture, centerScreen + new Vector2(-mainPlanetHeight/2, 0), new Vector2(-1, 0)), 
+                new Player(this, PlayerIndex.Two, playerTexture, centerScreen + new Vector2(mainPlanetHeight/2, 0), new Vector2(1, 0))
             };
             GameObjects.AddRange(_players);
 
             //GameObjects.Add(new MovableObject(this, _background, new Vector2(800, 500), 0.1f, 500000000000000));
             //GameObjects.Add(new MovableObject(this, _background, new Vector2(800, 1000), 0.1f, 500000000000000));
             //GameObjects.Add(new MovableObject(this, _background, new Vector2(200, 750), 0.05f, 300000));
+        }
+
+        private void AddPlanet(string textureName, float scale, Vector2 origin, int displayHeight, float mass, float boundingSpherePercent)
+        {
+            var planet = Content.Load<Texture2D>(textureName);
+            var planetHeight = (displayHeight * scale);
+            var displayScale = planetHeight / planet.Height;
+
+            GameObjects.Add(new Planet(this, planet, origin, displayScale, mass, boundingSpherePercent));
         }
 
         /// <summary>
@@ -97,13 +112,17 @@ namespace Gpp
             foreach (var gameObject in updateGameObjects)
                 gameObject.Update(gameTime.ElapsedGameTime);
 
-            foreach (var player in _players.ToList())
+            foreach (var projectile in GameObjects.OfType<Projectile>().ToList())
             {
-                foreach (var projectile in GameObjects.OfType<Projectile>().ToList())
+                foreach (var gameObject in GameObjects.Where(g => !(g is Projectile)).ToList())
                 {
-                    if (projectile.BoundingSphere.Intersects(player.BoundingSphere))
+                    if (projectile.BoundingSphere.Intersects(gameObject.BoundingSphere))
                     {
-                        player.TakeDamage(projectile);
+                        var player = gameObject as Player;
+                        if (player != null) player.TakeDamage(projectile);
+
+                        var planet = gameObject as Planet;
+                        if (planet != null) planet.TakeDamage(projectile);
                         GameObjects.Remove(projectile);
                     }
                 }
