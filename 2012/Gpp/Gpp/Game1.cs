@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Gpp
@@ -10,6 +11,8 @@ namespace Gpp
     {
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
+
+        public List<GameObject> GameObjects { get; private set; }
 
         public Game1()
         {
@@ -26,7 +29,7 @@ namespace Gpp
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            GameObjects = new List<GameObject>();
             base.Initialize();
         }
 
