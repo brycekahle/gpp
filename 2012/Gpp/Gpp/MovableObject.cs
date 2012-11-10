@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Gpp
 {
@@ -16,8 +17,8 @@ namespace Gpp
         /// </summary>
         public Vector2 Acceleration { get; set; }
 
-        public MovableObject(SupermassiveGame game)
-            : base(game)
+        public MovableObject(SupermassiveGame game, Texture2D texture, Vector2 position, float scale, float mass)
+            : base(game, texture, position, scale, mass)
         {
         }
 

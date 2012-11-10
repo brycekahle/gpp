@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -23,8 +24,8 @@ namespace Gpp
         private const float MovementSpeed = 1.0f; // m/s
         private const float JumpAcceleration = 5.0f; //m/s/s
 
-        public Player(SupermassiveGame game, PlayerIndex controlIndex)
-            : base(game)
+        public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, Vector2 position)
+            : base(game, texture, position, 0.05f, float.MaxValue)
         {
             _controlIndex = controlIndex;
         }
@@ -111,9 +112,9 @@ namespace Gpp
             base.Update(elapsedTime);
         }
 
-        public override void Draw()
+        public override void Draw(SpriteBatch batch)
         {
-            base.Draw();
+            base.Draw(batch);
         }
     }
 }
