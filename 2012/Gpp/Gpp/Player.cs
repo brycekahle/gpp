@@ -23,12 +23,14 @@ namespace Gpp
         private const float MaxCharge = 5.0f;
         private const float MovementSpeed = 1.0f; // m/s
         private const float JumpAcceleration = 5.0f; //m/s/s
-        private const float ReticleDistance = 10.0f;
+        private const float ReticleDistance = 50.0f;
 
-        public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, Vector2 position)
-            : base(game, texture, position, 0.05f, float.MaxValue)
+        public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, Vector2 position, Vector2 heading)
+            : base(game, texture, position, 0.3f, float.MaxValue)
         {
+            Heading = heading;
             _controlIndex = controlIndex;
+            _aimingVector = Heading;
         }
 
         private void ReadGamepad(TimeSpan elapsedTime)
@@ -110,14 +112,16 @@ namespace Gpp
         public override void Update(TimeSpan elapsedTime)
         {
             ReadGamepad(elapsedTime);
-            base.Update(elapsedTime);
+            //base.Update(elapsedTime);
         }
 
         public override void Draw(SpriteBatch batch)
         {
             var reticlePosition = Position + (_aimingVector * ReticleDistance);
-            var reticleTexture = Game.Content.Load<Texture2D>("aiming-reticle");            
-            batch.Draw(reticleTexture, reticlePosition, null, Color.White, 0,
+            var reticleTexture = Game.Content.Load<Texture2D>("aiming-reticle");
+
+            var reticleAngle = -(float)AngleBetweenVectors2(new Vector2(0, 1), _aimingVector);
+            batch.Draw(reticleTexture, reticlePosition, null, Color.White, reticleAngle,
                        new Vector2((float)reticleTexture.Width / 2, (float)reticleTexture.Height / 2),
                        1.0f, SpriteEffects.None, 0);
             base.Draw(batch);

@@ -50,16 +50,22 @@ namespace Gpp
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _background = Content.Load<Texture2D>("background");
+            var playerTexture = Content.Load<Texture2D>("player");
+
             ProjectileTexture = Content.Load<Texture2D>("background");
-            GameObjects = new List<GameObject>();
-            _players = new List<Player> { 
-                new Player(this, PlayerIndex.One, _background, new Vector2(100, 100)), 
-                new Player(this, PlayerIndex.Two, _background, new Vector2(100, 200)) };
-            GameObjects.AddRange(_players);
+            GameObjects = new List<GameObject>();            
 
             var planetTexture = Content.Load<Texture2D>("Rock-Planet-Flat");
-            var scale = (height * 0.3f) / planetTexture.Height;
-            GameObjects.Add(new Planet(this, planetTexture, new Vector2(width / 2, height / 2), scale, 5E10f));
+            var planetHeight = (height * 0.3f);
+            var scale = planetHeight / planetTexture.Height;
+            var centerScreen = new Vector2(width / 2, height / 2);
+            GameObjects.Add(new Planet(this, planetTexture, centerScreen, scale, 5E10f));
+
+            _players = new List<Player> { 
+                new Player(this, PlayerIndex.One, playerTexture, centerScreen + new Vector2(-planetHeight/2, 0), new Vector2(-1, 0)), 
+                new Player(this, PlayerIndex.Two, playerTexture, centerScreen + new Vector2(planetHeight/2, 0), new Vector2(1, 0))
+            };
+            GameObjects.AddRange(_players);
 
             //GameObjects.Add(new MovableObject(this, _background, new Vector2(800, 500), 0.1f, 500000000000000));
             //GameObjects.Add(new MovableObject(this, _background, new Vector2(800, 1000), 0.1f, 500000000000000));
@@ -97,7 +103,7 @@ namespace Gpp
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.Gray);
 
             _spriteBatch.Begin();
             //_spriteBatch.Draw(_background, new Rectangle(0, 0, 1920, 1080), Color.White);

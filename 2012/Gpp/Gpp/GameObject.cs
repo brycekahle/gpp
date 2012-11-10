@@ -49,9 +49,17 @@ namespace Gpp
 
         public virtual void Draw(SpriteBatch batch)
         {
-            batch.Draw(_texture, Position, null, Color.White, 0,
+            var headingAngle = (float)AngleBetweenVectors2(new Vector2(0, -1), Heading);
+            if (float.IsNaN(headingAngle)) headingAngle = 0;
+
+            batch.Draw(_texture, Position, null, Color.White, headingAngle,
                        new Vector2((float) _texture.Width/2, (float) _texture.Height/2),
                        _scale, SpriteEffects.None, 0);
+        }
+
+        public double AngleBetweenVectors2(Vector2 v1, Vector2 v2)
+        {
+            return ((v1.X - v2.X) > 0 ? -1 : 1) * (float)Math.Acos((double)Vector2.Dot(Vector2.Normalize(v1), Vector2.Normalize(v2)));
         }
     }
 }
