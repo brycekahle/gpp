@@ -59,7 +59,8 @@ namespace Gpp
             var planetHeight = (height * 0.3f);
             var scale = planetHeight / planetTexture.Height;
             var centerScreen = new Vector2(width / 2, height / 2);
-            GameObjects.Add(new Planet(this, planetTexture, centerScreen, scale, 1E15f));
+            GameObjects.Add(new Planet(this, planetTexture, centerScreen, scale, 1E15f,
+                new BoundingSphere(new Vector3(centerScreen.X, centerScreen.Y, 0), (planetHeight * 0.8f) / 2f)));
 
             _players = new List<Player> { 
                 new Player(this, PlayerIndex.One, playerTexture, centerScreen + new Vector2(-planetHeight/2, 0), new Vector2(-1, 0)), 
