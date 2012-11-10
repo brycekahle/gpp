@@ -16,7 +16,6 @@ namespace Gpp
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;        
         Texture2D _background;
-        public Texture2D ProjectileTexture { get; set; }
 
         public List<GameObject> GameObjects { get; private set; }
         List<Player> _players;
@@ -53,9 +52,10 @@ namespace Gpp
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _background = Content.Load<Texture2D>("star_field_1");
             var playerOneTexture = Content.Load<Texture2D>("bloop-sprite");
-            var playerTwoTexture = Content.Load<Texture2D>("bloop-sprite");
+            var playerTwoTexture = Content.Load<Texture2D>("brom-sprite");
 
-            ProjectileTexture = Content.Load<Texture2D>("projectile");
+            var playerOneProjectileTexture = Content.Load<Texture2D>("bloop-projectile");
+            var playerTwoProjectileTexture = Content.Load<Texture2D>("andy-projectile");
             GameObjects = new List<GameObject>();
             var centerScreen = new Vector2(width / 2, height / 2);
             var mainPlanetHeight = height * 0.3f;
@@ -85,8 +85,8 @@ namespace Gpp
 
             var playerRadius =  (mainPlanetHeight / 2.0f) + 10f;
             _players = new List<Player> { 
-                new Player(this, PlayerIndex.One, playerOneTexture, playerRadius, new Vector2(-1, 0), centerScreen), 
-                new Player(this, PlayerIndex.Two, playerTwoTexture, playerRadius, new Vector2(1, 0), centerScreen)
+                new Player(this, PlayerIndex.One, playerOneTexture, playerOneProjectileTexture, playerRadius, new Vector2(-1, 0), centerScreen), 
+                new Player(this, PlayerIndex.Two, playerTwoTexture, playerTwoProjectileTexture, playerRadius, new Vector2(1, 0), centerScreen)
             };
             GameObjects.AddRange(_players);
 

@@ -30,12 +30,14 @@ namespace Gpp
         private const float ReticleDistance = 70.0f;
 
         public float Health { get; private set; }
+        public Texture2D ProjectileTexture { get; private set; }
 
-        public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, float planetRadius, Vector2 heading, Vector2 planetCenter)
+        public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, Texture2D projectileTexture, float planetRadius, Vector2 heading, Vector2 planetCenter)
             : base(game, texture, planetCenter + heading * planetRadius, 0.3f, 5000000)
         {
             Heading = heading;
             _controlIndex = controlIndex;
+            ProjectileTexture = projectileTexture;
             _aimingVector = Heading;
             _planetCenter = planetCenter;
             _planetRadius = planetRadius;
@@ -76,15 +78,15 @@ namespace Gpp
             var rightMovementVector = Vector2.TransformNormal(Heading, Matrix.CreateRotationZ((float)-Math.PI / 2.0f));
 
             float movementRotate = 0.0f;
-            if (leftStickX == 0)
+            if (_isCharging)
             {
-                SetAnimation(Animation.Default);
                 // cancel out left and right movement velocities
                 //Velocity -= Vector2.Dot(Velocity, leftMovementVector) * leftMovementVector;
                 //Velocity -= Vector2.Dot(Velocity, rightMovementVector) * rightMovementVector;
             }
-            else if (_isCharging)
+            else if (leftStickX == 0)
             {
+                SetAnimation(Animation.Default);
                 // cancel out left and right movement velocities
                 //Velocity -= Vector2.Dot(Velocity, leftMovementVector) * leftMovementVector;
                 //Velocity -= Vector2.Dot(Velocity, rightMovementVector) * rightMovementVector;

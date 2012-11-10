@@ -16,7 +16,7 @@ namespace Gpp
         public float Damage { get { return BaseDamage; } }
 
         public Projectile(SupermassiveGame game, Player firingPlayer, Vector2 initialHeading, float firingPower)
-            : base(game, game.ProjectileTexture, firingPlayer.Position + initialHeading * 100, 0.1f, 100)
+            : base(game, firingPlayer.ProjectileTexture, firingPlayer.Position + initialHeading * 100, 0.1f, 100)
         {
             _firingPlayer = firingPlayer;
             Heading = initialHeading;
