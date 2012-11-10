@@ -15,6 +15,7 @@ namespace Gpp
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;        
         Texture2D _background;
+        public Texture2D ProjectileTexture { get; set; }
 
         public List<GameObject> GameObjects { get; private set; }
         List<Player> _players;
@@ -34,11 +35,6 @@ namespace Gpp
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
-            GameObjects = new List<GameObject>();
-            _players = new List<Player>() { 
-                new Player(this, PlayerIndex.One), 
-                new Player(this, PlayerIndex.Two) };
             base.Initialize();
         }
 
@@ -51,8 +47,15 @@ namespace Gpp
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _background = Content.Load<Texture2D>("background");
-
-            // TODO: use this.Content to load your game content here
+            ProjectileTexture = Content.Load<Texture2D>("background");
+            GameObjects = new List<GameObject>();
+            _players = new List<Player> { 
+                new Player(this, PlayerIndex.One, _background, new Vector2(100, 100)), 
+                new Player(this, PlayerIndex.Two, _background, new Vector2(100, 200)) };
+            GameObjects.AddRange(_players);
+            GameObjects.Add(new MovableObject(this, _background, new Vector2(800, 500), 0.1f, 500000000000000));
+            GameObjects.Add(new MovableObject(this, _background, new Vector2(800, 1000), 0.1f, 500000000000000));
+            GameObjects.Add(new MovableObject(this, _background, new Vector2(200, 750), 0.05f, 300000));
         }
 
         /// <summary>
@@ -74,6 +77,9 @@ namespace Gpp
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+            foreach (var gameObject in GameObjects)
+                gameObject.Update(gameTime.ElapsedGameTime);
+
             base.Update(gameTime);
         }
 
@@ -87,6 +93,9 @@ namespace Gpp
 
             _spriteBatch.Begin();
             _spriteBatch.Draw(_background, new Rectangle(0, 0, 1920, 1080), Color.White);
+            foreach (var gameObject in GameObjects)
+                gameObject.Draw(_spriteBatch);
+
             _spriteBatch.End();
 
             base.Draw(gameTime);

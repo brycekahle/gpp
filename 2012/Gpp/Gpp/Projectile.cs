@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Gpp
 {
@@ -12,7 +13,7 @@ namespace Gpp
         private Player _firingPlayer;
 
         public Projectile(SupermassiveGame game, Player firingPlayer, Vector2 initialHeading, float firingPower)
-            : base(game)
+            : base(game, game.ProjectileTexture, firingPlayer.Position, 1, 100)
         {
             _firingPlayer = firingPlayer;
             Heading = initialHeading;
@@ -24,9 +25,9 @@ namespace Gpp
             base.Update(elapsedTime);
         }
 
-        public override void Draw()
+        public override void Draw(SpriteBatch batch)
         {
-            base.Draw();
+            base.Draw(batch);
         }
     }
 }

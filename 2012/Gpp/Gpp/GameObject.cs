@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Gpp
 {
@@ -28,9 +29,17 @@ namespace Gpp
         /// </summary>
         public float Mass { get; protected set; }
 
-        public GameObject(SupermassiveGame game)
+        protected readonly float _scale;
+
+        private readonly Texture2D _texture;
+
+        public GameObject(SupermassiveGame game, Texture2D texture, Vector2 position, float scale, float mass)
         {
             Game = game;
+            _texture = texture;
+            Position = position;
+            _scale = scale;
+            Mass = mass;
         }
 
         public virtual void Update(TimeSpan elapsedTime)
@@ -38,9 +47,11 @@ namespace Gpp
             
         }
 
-        public virtual void Draw()
+        public virtual void Draw(SpriteBatch batch)
         {
-            
+            batch.Draw(_texture, Position, null, Color.White, 0,
+                       new Vector2((float) _texture.Width/2, (float) _texture.Height/2),
+                       _scale, SpriteEffects.None, 0);
         }
     }
 }
