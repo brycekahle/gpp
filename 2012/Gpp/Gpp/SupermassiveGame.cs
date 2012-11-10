@@ -58,7 +58,7 @@ namespace Gpp
             GameObjects = new List<GameObject>();
             var centerScreen = new Vector2(width / 2, height / 2);
             var mainPlanetHeight = height * 0.3f;
-            AddPlanet("Green-Planet", 0.5f, centerScreen, height, 5E13f, 0.48f);
+            AddPlanet("Green-Planet", 0.5f, centerScreen, height, 5E13f, 0.47f);
             //AddPlanet("Rock-Planet-Flat", 0.3f, centerScreen, height, 5E13f, 0.8f);
 
             var rand = new Random();
@@ -69,9 +69,10 @@ namespace Gpp
                 AddPlanet("Rock-Planet-Flat", 0.15f, origin, height, 1E13f, 0.8f);
             }
 
+            var playerRadius =  (mainPlanetHeight / 2.0f) + 10f;
             _players = new List<Player> { 
-                new Player(this, PlayerIndex.One, playerTexture, centerScreen + new Vector2(-mainPlanetHeight/2, 0), new Vector2(-1, 0)), 
-                new Player(this, PlayerIndex.Two, playerTexture, centerScreen + new Vector2(mainPlanetHeight/2, 0), new Vector2(1, 0))
+                new Player(this, PlayerIndex.One, playerTexture, playerRadius, new Vector2(-1, 0), centerScreen), 
+                new Player(this, PlayerIndex.Two, playerTexture, playerRadius, new Vector2(1, 0), centerScreen)
             };
             GameObjects.AddRange(_players);
 

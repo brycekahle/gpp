@@ -31,7 +31,7 @@ namespace Gpp
             base.Update(elapsedTime);
         }
 
-        protected void UpdateAcceleration(TimeSpan elapsedTime)
+        protected virtual void UpdateAcceleration(TimeSpan elapsedTime)
         {
             var resultDirectionalAcceleration = Vector2.Zero;
             foreach (var gameObject in Game.GameObjects.Where(o => o != this))
@@ -57,7 +57,7 @@ namespace Gpp
         {
             if (Game.GameObjects.ToList().Any(o => !(o is MovableObject) && o.BoundingSphere.Intersects(BoundingSphere)))
             {
-                return;
+                //return;
             }
             // m = (m/s) * s
             Position += Velocity * (float)elapsedTime.TotalSeconds;

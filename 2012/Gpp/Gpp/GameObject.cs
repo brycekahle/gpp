@@ -68,7 +68,7 @@ namespace Gpp
 
         protected virtual BoundingSphere GetBoundingSphere()
         {
-            return new BoundingSphere(new Vector3(Position.X, Position.Y, 0), _scale*_texture.Width/2f);
+            return new BoundingSphere(new Vector3(Position.X, Position.Y, 0), _scale*_texture.Height/2f);
         }
     }
 }

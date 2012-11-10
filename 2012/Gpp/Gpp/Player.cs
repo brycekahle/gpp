@@ -18,22 +18,27 @@ namespace Gpp
         private bool _isJumping;
 
         private Vector2 _aimingVector;
+        private Vector2 _planetCenter;
+        private float _planetRadius;
 
         private const float ChargeRate = 100.0f; // m/s
         private const float AimingRotateRate = 3.0f; // radians / s
         private const float MaxCharge = 500.0f;
-        private const float MovementSpeed = 1.0f; // m/s
+        private const float MovementSpeed = 100.0f; // m/s
+        private const float MovementRotateRate = 3.0f; // radian/s
         private const float JumpAcceleration = 5.0f; //m/s/s
         private const float ReticleDistance = 70.0f;
 
         public float Health { get; private set; }
 
-        public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, Vector2 position, Vector2 heading)
-            : base(game, texture, position, 0.3f, 5000000)
+        public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, float planetRadius, Vector2 heading, Vector2 planetCenter)
+            : base(game, texture, planetCenter + heading * planetRadius, 0.3f, 5000000)
         {
             Heading = heading;
             _controlIndex = controlIndex;
             _aimingVector = Heading;
+            _planetCenter = planetCenter;
+            _planetRadius = planetRadius;
             Health = 100f;
         }
 
@@ -66,25 +71,38 @@ namespace Gpp
 
         private void ReadSticks(GamePadState state, TimeSpan elapsedTime)
         {
-            var leftStick = state.ThumbSticks.Left.X;
+            var leftStickX = state.ThumbSticks.Left.X;
             var leftMovementVector = Vector2.TransformNormal(Heading, Matrix.CreateRotationZ((float)Math.PI / 2.0f));
             var rightMovementVector = Vector2.TransformNormal(Heading, Matrix.CreateRotationZ((float)-Math.PI / 2.0f));
 
-            if (_isCharging || leftStick == 0)
+            float movementRotate = 0.0f;
+            if (_isCharging || leftStickX == 0)
             {
                 // cancel out left and right movement velocities
-                Velocity -= Vector2.Dot(Velocity, leftMovementVector) * leftMovementVector;
-                Velocity -= Vector2.Dot(Velocity, rightMovementVector) * rightMovementVector;
+                //Velocity -= Vector2.Dot(Velocity, leftMovementVector) * leftMovementVector;
+                //Velocity -= Vector2.Dot(Velocity, rightMovementVector) * rightMovementVector;
             }
             else
             {
-                var movementVector = leftStick > 0 ? rightMovementVector : leftMovementVector;
-                Velocity += movementVector * (MovementSpeed * (float)elapsedTime.TotalSeconds);
+                movementRotate = leftStickX * (MovementRotateRate * (float)elapsedTime.TotalSeconds);
+                var newHeading = Vector2.TransformNormal(Heading, Matrix.CreateRotationZ(movementRotate));
+                
+                // if crossing vertical boundary
+                if (Math.Abs(newHeading.X) < 0.3)
+                {
+                    newHeading = Heading;
+                }
+                Heading = newHeading;
+
+                Position = _planetCenter + _planetRadius * Heading;
+                //var movementVector = leftStick > 0 ? rightMovementVector : leftMovementVector;
+                //Velocity += movementVector * (MovementSpeed * (float)elapsedTime.TotalSeconds);
             }
 
             var rightStickX = state.ThumbSticks.Right.X;
             // left is negative, but that means positive radians
-            _aimingVector = Vector2.TransformNormal(_aimingVector, Matrix.CreateRotationZ(rightStickX * (AimingRotateRate * (float)elapsedTime.TotalSeconds)));
+            var aimRotate = rightStickX * (AimingRotateRate * (float)elapsedTime.TotalSeconds);
+            _aimingVector = Vector2.TransformNormal(_aimingVector, Matrix.CreateRotationZ(aimRotate + movementRotate));
         }
 
         private void ReadTrigger(GamePadState state, TimeSpan elapsedTime)
@@ -116,7 +134,7 @@ namespace Gpp
         public override void Update(TimeSpan elapsedTime)
         {
             ReadGamepad(elapsedTime);
-            //base.Update(elapsedTime);
+            base.Update(elapsedTime);
         }
 
         public override void Draw(SpriteBatch batch)
@@ -131,6 +149,10 @@ namespace Gpp
                        new Vector2((float)reticleTexture.Width / 2, (float)reticleTexture.Height / 2),
                        1.0f, SpriteEffects.None, 0);
             base.Draw(batch);
+        }
+
+        protected override void UpdateAcceleration(TimeSpan elapsedTime)
+        {
         }
 
         public void TakeDamage(Projectile projectile)
