@@ -91,7 +91,7 @@ namespace Gpp
             GameObjects.Add(AddPlanet("Rock-Planet-Flat", 0.15f, new Vector2(width * 0.9f, height * 0.6f), height, 1E13f, 0.8f));
 
 
-            var playerRadius =  (mainPlanetHeight / 2.0f) + 10f;
+            var playerRadius =  (mainPlanetHeight / 2.0f);
             _players = new List<Player> { 
                 new Player(this, PlayerIndex.One, playerOneTexture, playerOneProjectileTexture, playerRadius, new Vector2(-1, 0), centerScreen, Content.Load<SoundEffect>("bloop-fire")), 
                 new Player(this, PlayerIndex.Two, playerTwoTexture, playerTwoProjectileTexture, playerRadius, new Vector2(1, 0), centerScreen, Content.Load<SoundEffect>("brom-fire"))

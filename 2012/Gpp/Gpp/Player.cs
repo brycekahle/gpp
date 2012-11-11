@@ -100,7 +100,7 @@ namespace Gpp
                 var newHeading = Vector2.TransformNormal(Heading, Matrix.CreateRotationZ(movementRotate));
                 
                 // if crossing vertical boundary
-                if (Math.Abs(newHeading.X) < 0.3)
+                if (Math.Abs(newHeading.X) < 0.6)
                 {
                     movementRotate = 0;
                     newHeading = Heading;

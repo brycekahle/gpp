@@ -11,12 +11,14 @@ namespace Gpp
     class Planet : GameObject
     {
         private float _boundingPercentage;
+        private float _originalScale;
 
         public Planet(SupermassiveGame game, Texture2D texture, Vector2 position, float scale, float mass, float boundingPercentage)
             : base(game, texture, position, scale, mass)
         {
             _boundingPercentage = boundingPercentage;
             BoundingSphere = GetBoundingSphere();
+            _originalScale = scale;
         }
 
         protected override BoundingSphere GetBoundingSphere()
@@ -26,9 +28,12 @@ namespace Gpp
 
         public void TakeDamage(Projectile projectile)
         {
-            Mass *= 1.1f;
-            _scale *= 1.1f;
-            BoundingSphere = GetBoundingSphere();
+            var newScale = _scale * 1.1f;
+            if (newScale < _originalScale * 2.0f) {
+                Mass *= 1.1f;
+                _scale = newScale;
+                BoundingSphere = GetBoundingSphere();
+            }
         }
     }
 }
