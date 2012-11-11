@@ -24,6 +24,7 @@ namespace Gpp
         SoundEffect _explosionSound;
         SpriteFont _font;
         public int _width, _height;
+        private Texture2D _logo;
 
         public SupermassiveGame()
         {
@@ -57,6 +58,7 @@ namespace Gpp
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _background = Content.Load<Texture2D>("star_field_1");
+            _logo = Content.Load<Texture2D>("super_massive_logo");
             var playerOneTexture = Content.Load<Texture2D>("bloop-sprite");
             var playerTwoTexture = Content.Load<Texture2D>("brom-sprite");
             _explosionSound = Content.Load<SoundEffect>("explosion");
@@ -179,7 +181,8 @@ namespace Gpp
             // draw scores
             _spriteBatch.DrawString(_font, _players[0].Health.ToString(), new Vector2(10f, 10f), Color.White);
             var origin = _font.MeasureString(_players[1].Health.ToString());
-            _spriteBatch.DrawString(_font, _players[1].Health.ToString(), new Vector2(_width - origin.X - 10, 10f), Color.White); 
+            _spriteBatch.DrawString(_font, _players[1].Health.ToString(), new Vector2(_width - origin.X - 10, 10f), Color.White);
+            //_spriteBatch.Draw(_logo, new Rectangle(_width/2-_logo.Width/2, _height-_logo.Height-10, _logo.Width, (int)(_logo.Height*0.2)), Color.White);
 
             _spriteBatch.End();
 
