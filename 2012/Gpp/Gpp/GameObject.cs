@@ -58,6 +58,10 @@ namespace Gpp
 
         public void SetAnimation(Animation animation)
         {
+            if (animation == _currentAnimation)
+            {
+                return;
+            }
             _currentAnimation = animation;
             _timeOnAnimation = 0;
         }
@@ -77,12 +81,16 @@ namespace Gpp
             {
                 _timeOnAnimation += elapsedTime.TotalSeconds;
                 var currentFrame = (int)(_timeOnAnimation/_timePerFrame) % GetFrameCount();
+                var spriteSheetX = currentFrame*_frameWidth;
+                var spriteSheetY = (int) _currentAnimation*_frameHeight;
                 batch.Draw(_texture,
-                           new Rectangle((int) Position.X - _frameWidth/2, (int) Position.Y - _frameHeight/2,
+                           Position,
+                           new Rectangle(spriteSheetX, spriteSheetY,
                                          _frameWidth, _frameHeight),
-                           new Rectangle(currentFrame*_frameWidth, (int)_currentAnimation*_frameHeight,
-                                         _frameWidth, _frameHeight),
-                           Color.White, headingAngle, new Vector2((float) _frameWidth/2, (float) _frameHeight/2),
+                           Color.White, headingAngle,
+                           new Vector2((float) _frameWidth/2,
+                                       (float) _frameHeight/2),
+                           _scale,
                            SpriteEffects.None, 0);
             }
         }
@@ -108,7 +116,7 @@ namespace Gpp
 
         protected virtual BoundingSphere GetBoundingSphere()
         {
-            return new BoundingSphere(new Vector3(Position.X, Position.Y, 0), _scale*_texture.Height/2f);
+            return new BoundingSphere(new Vector3(Position.X, Position.Y, 0), _scale*_frameHeight/2f);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Gpp
         private SoundEffect _fireEffect;
 
         public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, Texture2D projectileTexture, float planetRadius, Vector2 heading, Vector2 planetCenter, SoundEffect fireEffect)
-            : base(game, texture, planetCenter + heading * planetRadius, 0.3f, 5000000)
+            : base(game, texture, planetCenter + heading * planetRadius, 0.5f, 5000000)
         {
             Heading = heading;
             _controlIndex = controlIndex;
