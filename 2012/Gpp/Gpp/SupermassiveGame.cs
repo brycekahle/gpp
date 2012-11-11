@@ -182,7 +182,12 @@ namespace Gpp
             _spriteBatch.DrawString(_font, _players[0].Health.ToString(), new Vector2(10f, 10f), Color.White);
             var origin = _font.MeasureString(_players[1].Health.ToString());
             _spriteBatch.DrawString(_font, _players[1].Health.ToString(), new Vector2(_width - origin.X - 10, 10f), Color.White);
-            //_spriteBatch.Draw(_logo, new Rectangle(_width/2-_logo.Width/2, _height-_logo.Height-10, _logo.Width, (int)(_logo.Height*0.2)), Color.White);
+
+            var scale = (_height * 0.1f) / _logo.Height;
+            _spriteBatch.Draw(_logo, new Rectangle(_width / 2 - (int)(_logo.Width* scale) / 2, 
+                (int)(_height - (_logo.Height * scale)) - 10, 
+                (int)(_logo.Width * scale), 
+                (int)(_logo.Height * scale)), Color.White);
 
             _spriteBatch.End();
 
