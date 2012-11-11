@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -31,8 +32,9 @@ namespace Gpp
 
         public float Health { get; private set; }
         public Texture2D ProjectileTexture { get; private set; }
+        private SoundEffect _fireEffect;
 
-        public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, Texture2D projectileTexture, float planetRadius, Vector2 heading, Vector2 planetCenter)
+        public Player(SupermassiveGame game, PlayerIndex controlIndex, Texture2D texture, Texture2D projectileTexture, float planetRadius, Vector2 heading, Vector2 planetCenter, SoundEffect fireEffect)
             : base(game, texture, planetCenter + heading * planetRadius, 0.3f, 5000000)
         {
             Heading = heading;
@@ -41,6 +43,7 @@ namespace Gpp
             _aimingVector = Heading;
             _planetCenter = planetCenter;
             _planetRadius = planetRadius;
+            _fireEffect = fireEffect;
             Health = 100f;
         }
 
@@ -152,6 +155,7 @@ namespace Gpp
         {
             var proj = new Projectile(Game, this, _aimingVector, _chargeAmount);
             Game.GameObjects.Add(proj);
+            _fireEffect.Play();
 
             _isCharging = false;
             _chargeAmount = 0;

@@ -184,6 +184,18 @@
       <Link>Content\brom-sprite.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\ContentGame\ContentGame\ContentGame\bin\Windows Phone\Debug\Content\bloop-fire.xnb">
+      <Link>Content\bloop-fire.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ContentGame\ContentGame\ContentGame\bin\Windows Phone\Debug\Content\brom-fire.xnb">
+      <Link>Content\brom-fire.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\ContentGame\ContentGame\ContentGame\bin\Windows Phone\Debug\Content\explosion.xnb">
+      <Link>Content\explosion.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Gpp_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

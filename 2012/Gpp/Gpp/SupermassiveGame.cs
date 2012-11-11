@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Gpp
 {
@@ -20,6 +21,7 @@ namespace Gpp
         public List<GameObject> GameObjects { get; private set; }
         List<Player> _players;
         Planet _mainPlanet;
+        SoundEffect _explosionSound;
 
         public SupermassiveGame()
         {
@@ -53,6 +55,7 @@ namespace Gpp
             _background = Content.Load<Texture2D>("star_field_1");
             var playerOneTexture = Content.Load<Texture2D>("bloop-sprite");
             var playerTwoTexture = Content.Load<Texture2D>("brom-sprite");
+            _explosionSound = Content.Load<SoundEffect>("explosion");
 
             var playerOneProjectileTexture = Content.Load<Texture2D>("bloop-projectile");
             var playerTwoProjectileTexture = Content.Load<Texture2D>("andy-projectile");
@@ -85,8 +88,8 @@ namespace Gpp
 
             var playerRadius =  (mainPlanetHeight / 2.0f) + 10f;
             _players = new List<Player> { 
-                new Player(this, PlayerIndex.One, playerOneTexture, playerOneProjectileTexture, playerRadius, new Vector2(-1, 0), centerScreen), 
-                new Player(this, PlayerIndex.Two, playerTwoTexture, playerTwoProjectileTexture, playerRadius, new Vector2(1, 0), centerScreen)
+                new Player(this, PlayerIndex.One, playerOneTexture, playerOneProjectileTexture, playerRadius, new Vector2(-1, 0), centerScreen, Content.Load<SoundEffect>("bloop-fire")), 
+                new Player(this, PlayerIndex.Two, playerTwoTexture, playerTwoProjectileTexture, playerRadius, new Vector2(1, 0), centerScreen, Content.Load<SoundEffect>("brom-fire"))
             };
             GameObjects.AddRange(_players);
 
@@ -135,10 +138,18 @@ namespace Gpp
                     if (projectile.BoundingSphere.Intersects(gameObject.BoundingSphere))
                     {
                         var player = gameObject as Player;
-                        if (player != null) player.TakeDamage(projectile);
+                        if (player != null)
+                        {
+                            player.TakeDamage(projectile);
+                            _explosionSound.Play();
+                        }
 
                         var planet = gameObject as Planet;
-                        if (planet != null && planet != _mainPlanet) planet.TakeDamage(projectile);
+                        if (planet != null && planet != _mainPlanet)
+                        {
+                            planet.TakeDamage(projectile);
+                            _explosionSound.Play();
+                        }
                         GameObjects.Remove(projectile);
                     }
                 }
