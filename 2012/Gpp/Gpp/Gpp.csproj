@@ -196,6 +196,10 @@
       <Link>Content\explosion.xnb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\ContentGame\ContentGame\ContentGame\bin\Windows Phone\Debug\Content\segoe.xnb">
+      <Link>Content\segoe.xnb</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Gpp_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

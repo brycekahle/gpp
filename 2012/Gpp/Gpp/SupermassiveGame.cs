@@ -22,6 +22,8 @@ namespace Gpp
         List<Player> _players;
         Planet _mainPlanet;
         SoundEffect _explosionSound;
+        SpriteFont _font;
+        private int _width, _height;
 
         public SupermassiveGame()
         {
@@ -48,7 +50,9 @@ namespace Gpp
         protected override void LoadContent()
         {
             var width = GraphicsDevice.Viewport.Width;
+            _width = width;
             var height = GraphicsDevice.Viewport.Height;
+            _height = height;
 
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -56,6 +60,7 @@ namespace Gpp
             var playerOneTexture = Content.Load<Texture2D>("bloop-sprite");
             var playerTwoTexture = Content.Load<Texture2D>("brom-sprite");
             _explosionSound = Content.Load<SoundEffect>("explosion");
+            _font = Content.Load<SpriteFont>("Segoe");
 
             var playerOneProjectileTexture = Content.Load<Texture2D>("bloop-projectile");
             var playerTwoProjectileTexture = Content.Load<Texture2D>("andy-projectile");
@@ -80,10 +85,10 @@ namespace Gpp
             //    //;
             //    GameObjects.Add(planet);
             //}
-            GameObjects.Add(AddPlanet("Green-Planet", 0.25f, new Vector2(width * 0.1f, height * 0.1f), height, 1E13f, 0.5f));
-            GameObjects.Add(AddPlanet("Green-Planet", 0.25f, new Vector2(width * 0.8f, height * 0.2f), height, 1E13f, 0.5f));
-            GameObjects.Add(AddPlanet("Green-Planet", 0.25f, new Vector2(width * 0.3f, height * 0.7f), height, 1E13f, 0.5f));
-            GameObjects.Add(AddPlanet("Green-Planet", 0.25f, new Vector2(width * 0.9f, height * 0.6f), height, 1E13f, 0.5f));
+            GameObjects.Add(AddPlanet("Rock-Planet-Flat", 0.15f, new Vector2(width * 0.1f, height * 0.1f), height, 1E13f, 0.8f));
+            GameObjects.Add(AddPlanet("Rock-Planet-Flat", 0.15f, new Vector2(width * 0.8f, height * 0.2f), height, 1E13f, 0.8f));
+            GameObjects.Add(AddPlanet("Rock-Planet-Flat", 0.15f, new Vector2(width * 0.3f, height * 0.7f), height, 1E13f, 0.8f));
+            GameObjects.Add(AddPlanet("Rock-Planet-Flat", 0.15f, new Vector2(width * 0.9f, height * 0.6f), height, 1E13f, 0.8f));
 
 
             var playerRadius =  (mainPlanetHeight / 2.0f) + 10f;
@@ -170,6 +175,11 @@ namespace Gpp
             _spriteBatch.Draw(_background, new Rectangle(0, 0, 1920, 1080), Color.White);
             foreach (var gameObject in GameObjects)
                 gameObject.Draw(_spriteBatch, gameTime.ElapsedGameTime);
+
+            // draw scores
+            _spriteBatch.DrawString(_font, _players[0].Health.ToString(), new Vector2(10f, 10f), Color.White);
+            var origin = _font.MeasureString(_players[1].Health.ToString());
+            _spriteBatch.DrawString(_font, _players[1].Health.ToString(), new Vector2(_width - origin.X - 10, 10f), Color.White); 
 
             _spriteBatch.End();
 
