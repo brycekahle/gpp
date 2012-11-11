@@ -61,6 +61,13 @@ namespace Gpp
             }
             // m = (m/s) * s
             Position += Velocity * (float)elapsedTime.TotalSeconds;
+            if (Position.X < 0)
+            {
+                Position.X = Game._width;
+            }
+            if (Position.X > Game._width) Position.X = 0;
+            if (Position.Y < 0) Position.Y = Game._height;
+            if (Position.Y > Game._height) Position.Y = 0;
         }
     }
 }

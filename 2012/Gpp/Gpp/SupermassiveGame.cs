@@ -23,7 +23,7 @@ namespace Gpp
         Planet _mainPlanet;
         SoundEffect _explosionSound;
         SpriteFont _font;
-        private int _width, _height;
+        public int _width, _height;
 
         public SupermassiveGame()
         {
@@ -67,7 +67,7 @@ namespace Gpp
             GameObjects = new List<GameObject>();
             var centerScreen = new Vector2(width / 2, height / 2);
             var mainPlanetHeight = height * 0.3f;
-            _mainPlanet = AddPlanet("Green-Planet", 0.5f, centerScreen, height, 5E13f, 0.47f);
+            _mainPlanet = AddPlanet("Green-Planet", 0.5f, centerScreen, height, 5E14f, 0.47f);
             GameObjects.Add(_mainPlanet);
             //AddPlanet("Rock-Planet-Flat", 0.3f, centerScreen, height, 5E13f, 0.8f);
 
@@ -85,10 +85,10 @@ namespace Gpp
             //    //;
             //    GameObjects.Add(planet);
             //}
-            GameObjects.Add(AddPlanet("Rock-Planet-Flat", 0.15f, new Vector2(width * 0.1f, height * 0.1f), height, 1E13f, 0.8f));
-            GameObjects.Add(AddPlanet("Rock-Planet-Flat", 0.15f, new Vector2(width * 0.8f, height * 0.2f), height, 1E13f, 0.8f));
-            GameObjects.Add(AddPlanet("Rock-Planet-Flat", 0.15f, new Vector2(width * 0.3f, height * 0.7f), height, 1E13f, 0.8f));
-            GameObjects.Add(AddPlanet("Rock-Planet-Flat", 0.15f, new Vector2(width * 0.9f, height * 0.6f), height, 1E13f, 0.8f));
+            GameObjects.Add(AddPlanet("Rock-Planet-Flat", 0.15f, new Vector2(width * 0.1f, height * 0.1f), height, 5E14f, 0.8f));
+            GameObjects.Add(AddPlanet("Rock-Planet-Flat", 0.15f, new Vector2(width * 0.8f, height * 0.2f), height, 5E14f, 0.8f));
+            GameObjects.Add(AddPlanet("Rock-Planet-Flat", 0.15f, new Vector2(width * 0.3f, height * 0.7f), height, 5E14f, 0.8f));
+            GameObjects.Add(AddPlanet("Rock-Planet-Flat", 0.15f, new Vector2(width * 0.9f, height * 0.6f), height, 5E14f, 0.8f));
 
 
             var playerRadius =  (mainPlanetHeight / 2.0f);

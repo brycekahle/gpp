@@ -12,6 +12,7 @@ namespace Gpp
     {
         private float _boundingPercentage;
         private float _originalScale;
+        private const float PlanetShrinkRate = -0.01f; // 
 
         public Planet(SupermassiveGame game, Texture2D texture, Vector2 position, float scale, float mass, float boundingPercentage)
             : base(game, texture, position, scale, mass)
@@ -28,12 +29,26 @@ namespace Gpp
 
         public void TakeDamage(Projectile projectile)
         {
-            var newScale = _scale * 1.1f;
-            if (newScale < _originalScale * 2.0f) {
-                Mass *= 1.1f;
+            UpdateScale(0.1f);
+        }
+
+        private void UpdateScale(float change)
+        {
+            var newScale = _scale * (1.0f + change);
+            if (newScale < _originalScale) newScale = _originalScale;
+
+            if (newScale < _originalScale * 2.0f)
+            {
                 _scale = newScale;
+                Mass *= (1.15f + change);
                 BoundingSphere = GetBoundingSphere();
             }
+        }
+
+        public override void Update(TimeSpan elapsedTime)
+        {
+            //UpdateScale(PlanetShrinkRate * (float)elapsedTime.TotalSeconds);
+            base.Update(elapsedTime);
         }
     }
 }

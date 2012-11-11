@@ -20,7 +20,7 @@ namespace Gpp
         /// <summary>
         /// Meters from origin
         /// </summary>
-        public Vector2 Position { get; protected set; }
+        public Vector2 Position;
 
         public Vector2 Heading { get; protected set; }
 
@@ -104,7 +104,7 @@ namespace Gpp
                 case Animation.Walking:
                     return 8;
                 case Animation.Squatting:
-                    return 3;
+                    return 1;
             }
             return 1;
         }
