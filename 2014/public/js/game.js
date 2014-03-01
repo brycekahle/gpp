@@ -22,6 +22,7 @@ window.onload = function() {
     game.load.spritesheet('enemy', 'assets/enemy-small.png', 96, 59);
     game.load.spritesheet('reticle', 'assets/reticle.png', 230, 230);
     game.load.spritesheet('bullet', 'assets/bullet.png', 200, 200);
+    game.load.spritesheet('player2Missile', 'assets/top_down_missle.png', 256, 256);
     game.load.spritesheet('deathbits', 'assets/deathbits.png', 10, 10);
     game.load.audio('music1', ['assets/music1.mp3']);
   }
@@ -46,7 +47,7 @@ window.onload = function() {
     shipBullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
 
     player2Bullets = game.add.group();
-    player2Bullets.createMultiple(50, 'bullet');
+    player2Bullets.createMultiple(10, 'player2Missile');
     player2Bullets.setAll('autoCull', true);
     player2Bullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
 
@@ -116,7 +117,10 @@ window.onload = function() {
   }
 
   function enemyCollide(player, enemy) {
-    player.kill();
+    player.health -= 0.25;
+    if (player.health <= 0) {
+      player.kill();
+    };
   }
   function bulletBeforeCollide(bullet, enemy){
     // player 2 bullets only hit when 0.2 or less
@@ -124,9 +128,12 @@ window.onload = function() {
   }
   function bulletCollide(bullet, enemy) {
     bullet.kill();
-    enemy.kill();
-    score += 10;
-    scoreText.content = 'Score: ' + score;    
+    enemy.health -= 0.5;
+    if (enemy.health <= 0) {
+      enemy.kill();
+      score += 10;
+      scoreText.content = 'Score: ' + score; 
+    };   
   }
   //  Called if the bullet goes out of the screen
   function resetBullet (bullet) {

@@ -44,6 +44,7 @@ function PlayerAssist(game, bullets) {
             bullet.scale.x -= 0.01;
             bullet.scale.y -= 0.01;
             bullet.alpha += 0.01;
+            bullet.angle++;
           };
           bulletTime = game.time.now + 500;
         }
