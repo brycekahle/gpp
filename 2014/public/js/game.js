@@ -11,6 +11,8 @@ window.onload = function() {
   }
 
   function create() {
+    game.input.gamepad.start();
+
     playerShip = new PlayerShip(game);
   }
 
