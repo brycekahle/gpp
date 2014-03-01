@@ -47,6 +47,7 @@ PlayerShip.prototype.move = function() {
     if (this.angle > -this.maxTiltAngle){
       this.angle--;
     }
+    this.frame = 1;
   }
   else if (this.cursors.down.isDown || yAxis > 0.3) {
     yAxis = yAxis || 1.0;
@@ -56,6 +57,7 @@ PlayerShip.prototype.move = function() {
     if (this.angle < this.maxTiltAngle){
       this.angle++;
     }
+    this.frame = 2;
   }
   else{
     if (this.angle > 1){
@@ -65,6 +67,7 @@ PlayerShip.prototype.move = function() {
     } else{
       this.angle = 0;
     }
+    this.frame = 0;
   }
 };
 
