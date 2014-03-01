@@ -22,6 +22,7 @@ window.onload = function() {
     game.load.spritesheet('enemy', 'assets/enemy-small.png', 96, 59);
     game.load.spritesheet('reticle', 'assets/reticle.png', 230, 230);
     game.load.spritesheet('bullet', 'assets/bullet.png', 200, 200);
+    game.load.spritesheet('player2Missile', 'assets/top_down_missle.png', 256, 256);
     game.load.spritesheet('deathbits', 'assets/deathbits.png', 10, 10);
     game.load.audio('music1', ['assets/music1.mp3']);
   }
@@ -47,7 +48,7 @@ window.onload = function() {
     shipBullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
 
     player2Bullets = game.add.group();
-    player2Bullets.createMultiple(50, 'bullet');
+    player2Bullets.createMultiple(10, 'player2Missile');
     player2Bullets.setAll('autoCull', true);
     player2Bullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
 
