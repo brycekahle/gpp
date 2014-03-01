@@ -4,7 +4,7 @@
 var player1, playerShip, game, enemies, bullets, player2, starsprite;
 
 window.onload = function() {
-  game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
+  game = new Phaser.Game(960, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
 
   var starSpeed = 10.0; // 100x / second
 
@@ -35,6 +35,9 @@ window.onload = function() {
     }
 
     game.input.onDown.add(pauseToggle, this);
+    game.stage.fullScreenScaleMode = Phaser.StageScaleMode.SHOW_ALL;
+    var fKey = game.input.keyboard.addKey(Phaser.Keyboard.F);
+    fKey.onDown.add(goFull, this);
   }
 
   function update() {
@@ -59,6 +62,9 @@ window.onload = function() {
 
   function pauseToggle() {
     game.paused = !game.paused;
+  }
+  function goFull() {
+    game.stage.scale.startFullScreen();
   }
 
   function enemyCollide(player, enemy) {
