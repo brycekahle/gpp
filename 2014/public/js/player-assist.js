@@ -25,10 +25,10 @@ function PlayerAssist(game, bullets) {
     if (Math.abs(xAxis) > 0.1) {
       this.sprite.cameraOffset.x = game.math.clamp(this.sprite.cameraOffset.x + xAxis * this.moveSpeed, 0, game.world.width);
     }
-  }
+  };
 
   this.shoot = function(){
-    if (pad.buttonValue(Phaser.Gamepad.XBOX360_RIGHT_TRIGGER) > 0){
+    if (pad.buttonValue(Phaser.Gamepad.XBOX360_A) > 0){
       if (game.time.now > bulletTime)
       {
         var bullet = bullets.getFirstExists(false);
