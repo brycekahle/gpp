@@ -4,13 +4,13 @@
 var player1, playerShip, game, enemies, bullets, player2, starsprite;
 
 window.onload = function() {
-  game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
+  game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
 
   var starSpeed = 10.0; // 100x / second
 
   function preload() {
     game.load.image('starfield', 'assets/starfield.png');
-    player1 = game.load.spritesheet('player1', 'assets/player1.png', 100, 100);
+    player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 227, 176);
     game.load.spritesheet('enemy', 'assets/enemy.png', 25, 25);
     game.load.spritesheet('reticle', 'assets/reticle.png', 217, 206);
   }
