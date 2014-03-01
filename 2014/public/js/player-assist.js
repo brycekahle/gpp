@@ -4,6 +4,7 @@ function PlayerAssist(game, bullets) {
   this.sprite = game.add.sprite(game.camera.width / 2, game.world.height / 2, 'reticle');
   this.sprite.anchor.setTo(0.5, 0.5);
   this.sprite.fixedToCamera = true;
+  this.sprite.scale.setTo(0.5, 0.5);
   var bulletTime = 0;
 
   var pad = game.input.gamepad.pad2;
@@ -35,8 +36,8 @@ function PlayerAssist(game, bullets) {
 
         if (bullet) {
           bullet.reset(this.sprite.x, this.sprite.y);
-          bullet.scale.x = 0.99;
-          bullet.scale.y = 0.99;
+          bullet.scale.x = 0.49;
+          bullet.scale.y = 0.49;
           bullet.anchor.setTo(0.5, 0.5);
           bullet.alpha = 0.2;
           bullet.update = function(){
