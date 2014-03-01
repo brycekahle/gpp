@@ -58,6 +58,9 @@ function PlayerShip(game, bullets){
           {
             bullet.reset(this.sprite.x + 6, this.sprite.y - 8);
             bullet.body.velocity.x = 500;
+            bullet.scale.x = 1;
+            bullet.scale.y = 1;
+            bullet.update = function(){};
             bulletTime = game.time.now + 250;
           }
         }

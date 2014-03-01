@@ -1,9 +1,10 @@
 'use strict';
 
-function PlayerAssist(game) {
+function PlayerAssist(game, bullets) {
   this.sprite = game.add.sprite(game.camera.width / 2, game.world.height / 2, 'reticle');
   this.sprite.anchor.setTo(0.5, 0.5);
   this.sprite.fixedToCamera = true;
+  var bulletTime = 0;
 
   var pad = game.input.gamepad.pad2;
   this.moveSpeed = 10;
@@ -11,13 +12,39 @@ function PlayerAssist(game) {
   this.update = function() {
     if (!pad.connected) return;
 
+    this.move();
+    this.shoot();
+  };
+
+  this.move = function(){
     var yAxis = pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y);
     var xAxis = pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X);
-    if (Math.abs(yAxis) > 0.3) {
+    if (Math.abs(yAxis) > 0.1) {
       this.sprite.cameraOffset.y += yAxis * this.moveSpeed;
     }
-    if (Math.abs(xAxis) > 0.3) {
+    if (Math.abs(xAxis) > 0.1) {
       this.sprite.cameraOffset.x += xAxis * this.moveSpeed;
+    }
+  }
+
+  this.shoot = function(){
+    if (pad.buttonValue(Phaser.Gamepad.XBOX360_RIGHT_TRIGGER) > 0){
+      if (game.time.now > bulletTime)
+      {
+        var bullet = bullets.getFirstExists(false);
+
+        if (bullet) {
+          bullet.reset(this.sprite.x, this.sprite.y);
+          bullet.scale.x = 0.99;
+          bullet.scale.y = 0.99;
+          bullet.anchor.setTo(0.5, 0.5);
+          bullet.update = function(){
+            bullet.scale.x -= 0.01;
+            bullet.scale.y -= 0.01;
+          };
+          bulletTime = game.time.now + 500;
+        }
+      }
     }
   };
 }
