@@ -22,6 +22,7 @@ window.onload = function() {
     game.load.spritesheet('enemy', 'assets/enemy-small.png', 96, 59);
     game.load.spritesheet('reticle', 'assets/reticle.png', 230, 230);
     game.load.spritesheet('bullet', 'assets/bullet.png', 200, 200);
+    game.load.spritesheet('player2Missile', 'assets/top_down_missle.png', 256, 256);
     game.load.spritesheet('deathbits', 'assets/deathbits.png', 10, 10);
     game.load.audio('music1', ['assets/music1.mp3']);
   }
@@ -30,7 +31,6 @@ window.onload = function() {
     starsprite = game.add.tileSprite(0, 0, 4096, 1024, 'starfield');
     sunsprite = game.add.tileSprite(0, 0, 2048, 1024, 'sun');
     gassprite = game.add.tileSprite(0, 0, 2048, 1024, 'gasgiant');
-    rocksprite = game.add.tileSprite(0, 0, 2048, 1024, 'rock');
 
     music = game.add.audio('music1', musicVolume, true);
     music.play('', 0, 0, true);
@@ -47,7 +47,7 @@ window.onload = function() {
     shipBullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
 
     player2Bullets = game.add.group();
-    player2Bullets.createMultiple(50, 'bullet');
+    player2Bullets.createMultiple(10, 'player2Missile');
     player2Bullets.setAll('autoCull', true);
     player2Bullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
 
@@ -56,7 +56,7 @@ window.onload = function() {
     playerShip = new PlayerShip(game, shipBullets);
     player2 = new PlayerAssist(game, player2Bullets);
 
-    for (var i=0; i < 20; i++) {
+    for (var i=0; i < 200; i++) {
       enemies.add(new Enemy(game));
     }
 
@@ -67,6 +67,7 @@ window.onload = function() {
     var mKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
     mKey.onDown.add(toggleMute, this);
 
+    rocksprite = game.add.tileSprite(0, 0, 4096, 1024, 'rock');
     scoreText = game.add.text(16, 16, 'Score: 0', { font: '32px arial', fill: '#fff' });  
   }
 
@@ -76,7 +77,7 @@ window.onload = function() {
     var xdiff = (starSpeed * (game.time.elapsed / 1000));
     starsprite.tilePosition.x -= xdiff;
     gassprite.tilePosition.x -= xdiff * 8;
-    rocksprite.tilePosition.x -= xdiff * 4;
+    rocksprite.tilePosition.x -= xdiff * 40;
     sunsprite.tilePosition.x -= xdiff * 2;
 
     game.physics.overlap(playerShip, enemies, enemyCollide);
@@ -116,7 +117,10 @@ window.onload = function() {
   }
 
   function enemyCollide(player, enemy) {
-    player.kill();
+    player.health -= 0.25;
+    if (player.health <= 0) {
+      player.kill();
+    };
   }
   function bulletBeforeCollide(bullet, enemy){
     // player 2 bullets only hit when 0.2 or less
@@ -124,9 +128,12 @@ window.onload = function() {
   }
   function bulletCollide(bullet, enemy) {
     bullet.kill();
-    enemy.kill();
-    score += 10;
-    scoreText.content = 'Score: ' + score;    
+    enemy.health -= 0.5;
+    if (enemy.health <= 0) {
+      enemy.kill();
+      score += 10;
+      scoreText.content = 'Score: ' + score; 
+    };   
   }
   //  Called if the bullet goes out of the screen
   function resetBullet (bullet) {
