@@ -42,6 +42,7 @@ window.onload = function() {
     game.camera.x += xdiff;
 
     game.physics.collide(playerShip.sprite, enemies, enemyCollide);
+    game.physics.collide(bullets, enemies, bulletCollide);
   }
 
   function render() {
@@ -55,6 +56,9 @@ window.onload = function() {
 
   function enemyCollide(player, enemy) {
     player.kill();
+  }
+  function bulletCollide(bullet, enemy) {
+    enemy.kill();
   }
   //  Called if the bullet goes out of the screen
   function resetBullet (bullet) {
