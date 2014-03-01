@@ -2,6 +2,7 @@
 
 // A little lame, but want this for easy debugging
 var player1, playerShip, game, enemies, shipBullets, player2Bullets, player2, starsprite, music;
+var sunsprite, rocksprite, gassprite;
 
 var musicVolume = 0.5;
 
@@ -12,6 +13,10 @@ window.onload = function() {
 
   function preload() {
     game.load.image('starfield', 'assets/starfield.png');
+    game.load.image('gasgiant', 'assets/gas_giant.png');
+    game.load.image('sun', 'assets/small_sun.png');
+    game.load.image('rock', 'assets/foreground_rock.png');
+    
     player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 256, 128);
     game.load.spritesheet('enemy', 'assets/enemy-small.png', 96, 59);
     game.load.spritesheet('reticle', 'assets/reticle.png', 230, 230);
@@ -22,6 +27,10 @@ window.onload = function() {
 
   function create() {
     starsprite = game.add.tileSprite(0, 0, 4096, 1024, 'starfield');
+    sunsprite = game.add.tileSprite(0, 0, 2048, 1024, 'sun');
+    gassprite = game.add.tileSprite(0, 0, 2048, 1024, 'gasgiant');
+    rocksprite = game.add.tileSprite(0, 0, 2048, 1024, 'rock');
+
     music = game.add.audio('music1', musicVolume, true);
     music.play('', 0, 0, true);
     //game.world.setBounds(0, 0, 80000, 600);
@@ -63,6 +72,9 @@ window.onload = function() {
     
     var xdiff = (starSpeed * (game.time.elapsed / 1000));
     starsprite.tilePosition.x -= xdiff;
+    gassprite.tilePosition.x -= xdiff * 8;
+    rocksprite.tilePosition.x -= xdiff * 4;
+    sunsprite.tilePosition.x -= xdiff * 2;
 
     game.physics.overlap(playerShip, enemies, enemyCollide);
     game.physics.overlap(shipBullets, enemies, bulletCollide);
