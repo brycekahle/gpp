@@ -56,7 +56,7 @@ window.onload = function() {
     starsprite.tilePosition.x -= xdiff;
 
     game.physics.collide(playerShip.sprite, enemies, enemyCollide);
-    game.physics.collide(bullets, enemies, bulletCollide);
+    game.physics.collide(bullets, enemies, bulletCollide, bulletBeforeCollide);
 
     bullets.forEach(function (bullet) {
       if (bullet.alive){
@@ -87,10 +87,12 @@ window.onload = function() {
   function enemyCollide(player, enemy) {
     player.kill();
   }
+  function bulletBeforeCollide(bullet, enemy){
+    // Normal bullets are 0.2 in size.
+    // player 2 bullets only hit when 0.2 or less
+    return bullet.scale.x <= 0.2;
+  }
   function bulletCollide(bullet, enemy) {
-    if (bullet.scale.x < 1 && bullet.scale.x > 0.2) {
-      return;
-    }
     bullet.kill();
     enemy.kill();
   }
