@@ -49,13 +49,12 @@ window.onload = function() {
   }
 
   function update() {
-    playerShip.update();
     player2.update();
     
     var xdiff = (starSpeed * (game.time.elapsed / 1000));
     starsprite.tilePosition.x -= xdiff;
 
-    game.physics.collide(playerShip.sprite, enemies, enemyCollide);
+    game.physics.collide(playerShip, enemies, enemyCollide);
     game.physics.collide(bullets, enemies, bulletCollide);
 
     bullets.forEach(function (bullet) {
@@ -71,7 +70,7 @@ window.onload = function() {
 
   function render() {
     game.debug.renderCameraInfo(game.camera, 32, 32);
-    game.debug.renderSpriteCoords(playerShip.sprite, 32, 100);
+    game.debug.renderSpriteCoords(playerShip, 32, 100);
   }
 
   function pauseToggle() {
