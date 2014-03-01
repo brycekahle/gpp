@@ -1,7 +1,7 @@
 'use strict';
 
 // A little lame, but want this for easy debugging
-var player1, playerShip, game, enemies, bullets, player2, starsprite, music;
+var player1, playerShip, game, enemies, shipBullets, player2Bullets, player2, starsprite, music;
 
 var musicVolume = 0.5;
 
@@ -27,15 +27,24 @@ window.onload = function() {
     //game.world.setBounds(0, 0, 80000, 600);
 
     enemies = game.add.group();
-    bullets = game.add.group();
-    bullets.createMultiple(50, 'bullet');
-    bullets.setAll('autoCull', true);
-    bullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
+    shipBullets = game.add.group();
+    shipBullets.createMultiple(50, 'bullet');
+    shipBullets.setAll('autoCull', true);
+    shipBullets.setAll('scale.x', 0.2);
+    shipBullets.setAll('scale.y', 0.2);
+    shipBullets.setAll('anchor.x', 0.5);
+    shipBullets.setAll('anchor.y', 0.5);
+    shipBullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
+
+    player2Bullets = game.add.group();
+    player2Bullets.createMultiple(50, 'bullet');
+    player2Bullets.setAll('autoCull', true);
+    player2Bullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
 
     game.input.gamepad.start();
 
-    playerShip = new PlayerShip(game, bullets);
-    player2 = new PlayerAssist(game, bullets);
+    playerShip = new PlayerShip(game, shipBullets);
+    player2 = new PlayerAssist(game, player2Bullets);
 
     for (var i=0; i < 20; i++) {
       enemies.add(new Enemy(game));
@@ -56,9 +65,16 @@ window.onload = function() {
     starsprite.tilePosition.x -= xdiff;
 
     game.physics.overlap(playerShip, enemies, enemyCollide);
-    game.physics.overlap(bullets, enemies, bulletCollide, bulletBeforeCollide);
+    game.physics.overlap(shipBullets, enemies, bulletCollide);
+    game.physics.overlap(player2Bullets, enemies, bulletCollide, bulletBeforeCollide);
 
-    bullets.forEach(function (bullet) {
+    shipBullets.forEach(function (bullet) {
+      if (bullet.alive && !bullet.renderable) {
+        bullet.kill();
+      }
+    });
+
+    player2Bullets.forEach(function (bullet) {
       if (bullet.alive){
         if (!bullet.renderable || bullet.scale.x <= 0) {
           bullet.kill();
@@ -88,7 +104,6 @@ window.onload = function() {
     player.kill();
   }
   function bulletBeforeCollide(bullet, enemy){
-    // Normal bullets are 0.2 in size.
     // player 2 bullets only hit when 0.2 or less
     return bullet.scale.x <= 0.2;
   }
