@@ -20,6 +20,7 @@ window.onload = function() {
     enemies = game.add.group();
     bullets = game.add.group();
     bullets.createMultiple(50, 'bullet');
+    bullets.setAll('autoCull', true);
     bullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
 
     game.input.gamepad.start();
@@ -43,6 +44,10 @@ window.onload = function() {
 
     game.physics.collide(playerShip.sprite, enemies, enemyCollide);
     game.physics.collide(bullets, enemies, bulletCollide);
+
+    bullets.forEach(function (bullet) {
+      if (bullet.alive && !bullet.renderable) bullet.kill();
+    });
   }
 
   function render() {
@@ -58,6 +63,7 @@ window.onload = function() {
     player.kill();
   }
   function bulletCollide(bullet, enemy) {
+    bullet.kill();
     enemy.kill();
   }
   //  Called if the bullet goes out of the screen
