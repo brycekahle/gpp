@@ -28,6 +28,7 @@
   , "$": true
   , "Phaser": true
   , "PlayerShip": true
+  , "PlayerAssist": true
   }
 , "predef": [
     "io"
