@@ -29,6 +29,7 @@
   , "Phaser": true
   , "PlayerShip": true
   , "PlayerAssist": true
+  , "Enemy": true
   }
 , "predef": [
     "io"
