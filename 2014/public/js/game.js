@@ -12,7 +12,7 @@ window.onload = function() {
 
   function preload() {
     game.load.image('starfield', 'assets/starfield.png');
-    player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 227, 176);
+    player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 256, 128);
     game.load.spritesheet('enemy', 'assets/enemy-small.png', 96, 59);
     game.load.spritesheet('reticle', 'assets/reticle.png', 230, 230);
     game.load.spritesheet('bullet', 'assets/bullet.png', 200, 200);
