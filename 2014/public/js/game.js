@@ -9,7 +9,7 @@ window.onload = function() {
   var cameraSpeed = 200.0; // 100x / second
 
   function preload() {
-    player1 = game.load.spritesheet('player1', 'assets/player1.png', 100, 100);
+    player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 227, 176);
     game.load.spritesheet('enemy', 'assets/enemy.png', 25, 25);
     game.load.spritesheet('reticle', 'assets/reticle.png', 217, 206);
   }
