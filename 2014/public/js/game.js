@@ -1,7 +1,9 @@
 'use strict';
 
 // A little lame, but want this for easy debugging
-var player1, playerShip, game, enemies, bullets, player2, starsprite;
+var player1, playerShip, game, enemies, bullets, player2, starsprite, music;
+
+var musicVolume = 0.5;
 
 window.onload = function() {
   game = new Phaser.Game(960, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
@@ -13,10 +15,13 @@ window.onload = function() {
     player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 227, 176);
     game.load.spritesheet('enemy', 'assets/enemy.png', 25, 25);
     game.load.spritesheet('reticle', 'assets/reticle.png', 217, 206);
+    game.load.audio('music1', ['assets/music1.mp3']);
   }
 
   function create() {
     starsprite = game.add.tileSprite(0, 0, 4096, 1024, 'starfield');
+    music = game.add.audio('music1', musicVolume, true);
+    music.play('', 0, 0, true);
     //game.world.setBounds(0, 0, 80000, 600);
 
     enemies = game.add.group();
@@ -38,6 +43,8 @@ window.onload = function() {
     game.stage.fullScreenScaleMode = Phaser.StageScaleMode.SHOW_ALL;
     var fKey = game.input.keyboard.addKey(Phaser.Keyboard.F);
     fKey.onDown.add(goFull, this);
+    var mKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
+    mKey.onDown.add(toggleMute, this);
   }
 
   function update() {
@@ -65,6 +72,9 @@ window.onload = function() {
   }
   function goFull() {
     game.stage.scale.startFullScreen();
+  }
+  function toggleMute() {
+    music.volume = music.volume ? 0 : musicVolume;
   }
 
   function enemyCollide(player, enemy) {
