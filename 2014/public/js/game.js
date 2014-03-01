@@ -1,7 +1,7 @@
 'use strict';
 
 // A little lame, but want this for easy debugging
-var player1, playerShip, game, enemies;
+var player1, playerShip, game, enemies, bullets;
 
 window.onload = function() {
   game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
@@ -17,9 +17,13 @@ window.onload = function() {
     game.world.setBounds(0, 0, 80000, 600);
 
     enemies = game.add.group();
+    bullets = game.add.group();
+    bullets.createMultiple(50, 'bullet');
+    bullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
+
     game.input.gamepad.start();
 
-    playerShip = new PlayerShip(game);
+    playerShip = new PlayerShip(game, bullets);
 
     for (var i=0; i < 20; i++) {
       enemies.create(game.rnd.integerInRange(200, 10000), game.rnd.integerInRange(25, 575), 'enemy');
@@ -47,5 +51,9 @@ window.onload = function() {
 
   function enemyCollide(player, enemy) {
     player.kill();
+  }
+  //  Called if the bullet goes out of the screen
+  function resetBullet (bullet) {
+    bullet.kill();
   }
 };
