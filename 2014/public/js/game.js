@@ -1,21 +1,23 @@
 'use strict';
 
 // A little lame, but want this for easy debugging
-var player1, playerShip, game, enemies, bullets, player2;
+var player1, playerShip, game, enemies, bullets, player2, starsprite;
 
 window.onload = function() {
   game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
 
-  var cameraSpeed = 200.0; // 100x / second
+  var starSpeed = 10.0; // 100x / second
 
   function preload() {
+    game.load.image('starfield', 'assets/starfield.png');
     player1 = game.load.spritesheet('player1', 'assets/player1.png', 100, 100);
     game.load.spritesheet('enemy', 'assets/enemy.png', 25, 25);
     game.load.spritesheet('reticle', 'assets/reticle.png', 217, 206);
   }
 
   function create() {
-    game.world.setBounds(0, 0, 80000, 600);
+    starsprite = game.add.tileSprite(0, 0, 4096, 1024, 'starfield');
+    //game.world.setBounds(0, 0, 80000, 600);
 
     enemies = game.add.group();
     bullets = game.add.group();
@@ -29,7 +31,7 @@ window.onload = function() {
     player2 = new PlayerAssist(game);
 
     for (var i=0; i < 20; i++) {
-      enemies.create(game.rnd.integerInRange(200, 10000), game.rnd.integerInRange(25, 575), 'enemy');
+      enemies.add(new Enemy(game));
     }
 
     game.input.onDown.add(pauseToggle, this);
@@ -39,8 +41,8 @@ window.onload = function() {
     playerShip.update();
     player2.update();
     
-    var xdiff = (cameraSpeed * (game.time.elapsed / 1000));
-    game.camera.x += xdiff;
+    var xdiff = (starSpeed * (game.time.elapsed / 1000));
+    starsprite.tilePosition.x -= xdiff;
 
     game.physics.collide(playerShip.sprite, enemies, enemyCollide);
     game.physics.collide(bullets, enemies, bulletCollide);
