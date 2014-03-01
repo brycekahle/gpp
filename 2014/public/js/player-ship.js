@@ -37,10 +37,12 @@ function PlayerShip(game, bullets){
         }
       }
       else{
-        if (this.sprite.angle > 0){
+        if (this.sprite.angle > 1){
           this.sprite.angle -= 2;
-        } else if (this.sprite.angle < 0){
+        } else if (this.sprite.angle < -1){
           this.sprite.angle += 2;
+        } else{
+          this.sprite.angle = 0;
         }
       }
     };
