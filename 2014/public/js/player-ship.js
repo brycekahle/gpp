@@ -25,6 +25,16 @@ PlayerShip.prototype.update = function(){
   this.shoot();
 };
 
+PlayerShip.prototype.kill = function () {
+  Phaser.Sprite.prototype.kill.call(this);
+  var deathEmitter = this.game.add.emitter(this.x, this.y, 100);
+  deathEmitter.makeParticles('deathbits', 0, 100);
+  deathEmitter.minParticleSpeed.setTo(-400, -400);
+  deathEmitter.maxParticleSpeed.setTo(400, 400);
+  deathEmitter.gravity = 0;
+  deathEmitter.start(true, 1000, 0, 100);
+};
+
 PlayerShip.prototype.move = function() {
   var yAxis = this.pad1.connected ? this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) : 0;
 
@@ -60,7 +70,7 @@ PlayerShip.prototype.move = function() {
 
 PlayerShip.prototype.shoot = function(){
   if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) ||
-   (this.pad1.connected && this.pad1.buttonValue(Phaser.Gamepad.XBOX360_RIGHT_TRIGGER) > 0)){
+   (this.pad1.connected && this.pad1.buttonValue(Phaser.Gamepad.XBOX360_A) > 0)){
     if (this.game.time.now > this.bulletTime)
     {
       var bullet = this.bullets.getFirstExists(false);
