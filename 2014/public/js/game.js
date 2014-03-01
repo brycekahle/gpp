@@ -14,7 +14,7 @@ window.onload = function() {
     game.load.image('starfield', 'assets/starfield.png');
     player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 227, 176);
     game.load.spritesheet('enemy', 'assets/enemy.png', 25, 25);
-    game.load.spritesheet('reticle', 'assets/reticle.png', 217, 206);
+    game.load.spritesheet('reticle', 'assets/reticle.png', 230, 230);
     game.load.spritesheet('bullet', 'assets/bullet.png', 200, 200);
     game.load.audio('music1', ['assets/music1.mp3']);
   }
