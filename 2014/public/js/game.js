@@ -56,7 +56,7 @@ window.onload = function() {
     playerShip = new PlayerShip(game, shipBullets);
     player2 = new PlayerAssist(game, player2Bullets);
 
-    for (var i=0; i < 20; i++) {
+    for (var i=0; i < 200; i++) {
       enemies.add(new Enemy(game));
     }
 
