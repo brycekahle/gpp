@@ -1,0 +1,55 @@
+{
+  "node": true
+, "nonstandard": true
+, "strict": true
+, "smarttabs": true
+, "maxlen": 1800
+, "newcap": false
+, "expr": true
+, "undef": true
+, "unused": false
+, "onecase": true
+, "laxcomma": true
+, "laxbreak": true
+, "white": false
+, "shadow": true
+, "proto": true
+, "loopfunc": true
+, "boss": true
+, "validthis": true
+, "globals": {
+    "describe": false
+  , "it": false
+  , "before": false
+  , "after": false
+  , "d3": true
+  , "_": true
+  , "Backbone": true
+  , "window": true
+  , "document": true
+  , "navigator": true
+  , "$": true
+  , "jQuery": true
+  , "io": true
+  , "Store": true
+  , "Sync": true
+  , "gigya": true
+  , "Zepto": true
+  , "enquire": true
+  , "registry": true
+  , "linkify": true
+  , "moment": true
+  , "Spinner": true
+  , "templatizer": true
+  , "heatmapFactory": true
+  }
+, "predef": [
+    "io"
+  , "Backbone"
+  , "Sync"
+  , "Store"
+  , "$"
+  , "window"
+  , "OO"
+  ]
+}
