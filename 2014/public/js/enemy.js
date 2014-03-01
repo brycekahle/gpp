@@ -1,7 +1,7 @@
 'use strict';
 
 var Enemy = function (game) {
-  Phaser.Sprite.call(this, game, game.rnd.integerInRange(200, 10000), game.rnd.integerInRange(25, 575), 'enemy');
+  Phaser.Sprite.call(this, game, game.rnd.integerInRange(800, 10000), game.rnd.integerInRange(25, 575), 'enemy');
   this.body.velocity.x = -50;
   this.phase = game.rnd.angle();
   game.add.existing(this);

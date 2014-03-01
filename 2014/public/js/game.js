@@ -3,6 +3,7 @@
 // A little lame, but want this for easy debugging
 var player1, playerShip, game, enemies, shipBullets, player2Bullets, player2, starsprite, music;
 var sunsprite, rocksprite, gassprite;
+var score = 0, scoreText;
 
 var musicVolume = 0.5;
 
@@ -39,8 +40,8 @@ window.onload = function() {
     shipBullets = game.add.group();
     shipBullets.createMultiple(50, 'bullet');
     shipBullets.setAll('autoCull', true);
-    shipBullets.setAll('scale.x', 0.2);
-    shipBullets.setAll('scale.y', 0.2);
+    shipBullets.setAll('scale.x', 0.1);
+    shipBullets.setAll('scale.y', 0.1);
     shipBullets.setAll('anchor.x', 0.5);
     shipBullets.setAll('anchor.y', 0.5);
     shipBullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
@@ -65,6 +66,8 @@ window.onload = function() {
     fKey.onDown.add(goFull, this);
     var mKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
     mKey.onDown.add(toggleMute, this);
+
+    scoreText = game.add.text(16, 16, 'Score: 0', { font: '32px arial', fill: '#fff' });  
   }
 
   function update() {
@@ -98,8 +101,8 @@ window.onload = function() {
   }
 
   function render() {
-    game.debug.renderCameraInfo(game.camera, 32, 32);
-    game.debug.renderSpriteCoords(playerShip, 32, 100);
+    //game.debug.renderCameraInfo(game.camera, 32, 32);
+    //game.debug.renderSpriteCoords(playerShip, 32, 100);
   }
 
   function pauseToggle() {
@@ -127,7 +130,9 @@ window.onload = function() {
     enemy.health -= 0.5;
     if (enemy.health <= 0) {
       enemy.kill();
-    };
+      score += 10;
+      scoreText.content = 'Score: ' + score; 
+    };   
   }
   //  Called if the bullet goes out of the screen
   function resetBullet (bullet) {

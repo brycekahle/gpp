@@ -44,9 +44,9 @@ PlayerShip.prototype.move = function() {
     this.cameraOffset.y = this.game.math.clamp(this.cameraOffset.y + ydiff, this.height/2, 
       this.game.world.height - this.height/2);
 
-    if (this.angle > -this.maxTiltAngle){
-      this.angle--;
-    }
+    // if (this.angle > -this.maxTiltAngle){
+    //   this.angle--;
+    // }
     this.frame = 1;
   }
   else if (this.cursors.down.isDown || yAxis > 0.3) {
@@ -54,19 +54,19 @@ PlayerShip.prototype.move = function() {
     var ydiff = yAxis * this.moveSpeed;
     this.cameraOffset.y = this.game.math.clamp(this.cameraOffset.y + ydiff, this.height/2, this.game.world.height - this.height/2);
 
-    if (this.angle < this.maxTiltAngle){
-      this.angle++;
-    }
+    // if (this.angle < this.maxTiltAngle){
+    //   this.angle++;
+    // }
     this.frame = 2;
   }
   else{
-    if (this.angle > 1){
-      this.angle -= 2;
-    } else if (this.angle < -1){
-      this.angle += 2;
-    } else{
-      this.angle = 0;
-    }
+    // if (this.angle > 1){
+    //   this.angle -= 2;
+    // } else if (this.angle < -1){
+    //   this.angle += 2;
+    // } else{
+    //   this.angle = 0;
+    // }
     this.frame = 0;
   }
 };
@@ -80,7 +80,7 @@ PlayerShip.prototype.shoot = function(){
 
       if (bullet)
       {
-        bullet.reset(this.x + 6, this.y - 8);
+        bullet.reset(this.x, this.y);
         bullet.body.velocity.x = 500;
         this.bulletTime = this.game.time.now + 250;
       }
