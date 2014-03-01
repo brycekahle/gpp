@@ -14,7 +14,8 @@ window.onload = function() {
     game.load.image('starfield', 'assets/starfield.png');
     player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 227, 176);
     game.load.spritesheet('enemy', 'assets/enemy.png', 25, 25);
-    game.load.spritesheet('reticle', 'assets/reticle.png', 217, 206);
+    game.load.spritesheet('reticle', 'assets/reticle.png', 230, 230);
+    game.load.spritesheet('bullet', 'assets/bullet.png', 200, 200);
     game.load.audio('music1', ['assets/music1.mp3']);
   }
 
@@ -33,7 +34,7 @@ window.onload = function() {
     game.input.gamepad.start();
 
     playerShip = new PlayerShip(game, bullets);
-    player2 = new PlayerAssist(game);
+    player2 = new PlayerAssist(game, bullets);
 
     for (var i=0; i < 20; i++) {
       enemies.add(new Enemy(game));
@@ -58,7 +59,13 @@ window.onload = function() {
     game.physics.collide(bullets, enemies, bulletCollide);
 
     bullets.forEach(function (bullet) {
-      if (bullet.alive && !bullet.renderable) bullet.kill();
+      if (bullet.alive){
+        if (!bullet.renderable || bullet.scale.x <= 0) {
+          bullet.kill();
+        } else{
+          bullet.update();
+        }
+      }
     });
   }
 
@@ -81,6 +88,9 @@ window.onload = function() {
     player.kill();
   }
   function bulletCollide(bullet, enemy) {
+    if (bullet.scale.x < 1 && bullet.scale.x > 0.2) {
+      return;
+    }
     bullet.kill();
     enemy.kill();
   }
