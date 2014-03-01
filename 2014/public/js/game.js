@@ -2,6 +2,8 @@
 
 // A little lame, but want this for easy debugging
 var player1, playerShip, game, enemies, shipBullets, player2Bullets, player2, starsprite, music;
+var sunsprite, rocksprite, gassprite;
+var score = 0, scoreText;
 
 var musicVolume = 0.5;
 
@@ -12,7 +14,11 @@ window.onload = function() {
 
   function preload() {
     game.load.image('starfield', 'assets/starfield.png');
-    player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 227, 176);
+    game.load.image('gasgiant', 'assets/gas_giant.png');
+    game.load.image('sun', 'assets/small_sun.png');
+    game.load.image('rock', 'assets/foreground_rock.png');
+    
+    player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 256, 128);
     game.load.spritesheet('enemy', 'assets/enemy-small.png', 96, 59);
     game.load.spritesheet('reticle', 'assets/reticle.png', 230, 230);
     game.load.spritesheet('bullet', 'assets/bullet.png', 200, 200);
@@ -22,6 +28,10 @@ window.onload = function() {
 
   function create() {
     starsprite = game.add.tileSprite(0, 0, 4096, 1024, 'starfield');
+    sunsprite = game.add.tileSprite(0, 0, 2048, 1024, 'sun');
+    gassprite = game.add.tileSprite(0, 0, 2048, 1024, 'gasgiant');
+    rocksprite = game.add.tileSprite(0, 0, 2048, 1024, 'rock');
+
     music = game.add.audio('music1', musicVolume, true);
     music.play('', 0, 0, true);
     //game.world.setBounds(0, 0, 80000, 600);
@@ -30,8 +40,8 @@ window.onload = function() {
     shipBullets = game.add.group();
     shipBullets.createMultiple(50, 'bullet');
     shipBullets.setAll('autoCull', true);
-    shipBullets.setAll('scale.x', 0.2);
-    shipBullets.setAll('scale.y', 0.2);
+    shipBullets.setAll('scale.x', 0.1);
+    shipBullets.setAll('scale.y', 0.1);
     shipBullets.setAll('anchor.x', 0.5);
     shipBullets.setAll('anchor.y', 0.5);
     shipBullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
@@ -56,6 +66,8 @@ window.onload = function() {
     fKey.onDown.add(goFull, this);
     var mKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
     mKey.onDown.add(toggleMute, this);
+
+    scoreText = game.add.text(16, 16, 'Score: 0', { font: '32px arial', fill: '#fff' });  
   }
 
   function update() {
@@ -63,6 +75,9 @@ window.onload = function() {
     
     var xdiff = (starSpeed * (game.time.elapsed / 1000));
     starsprite.tilePosition.x -= xdiff;
+    gassprite.tilePosition.x -= xdiff * 8;
+    rocksprite.tilePosition.x -= xdiff * 4;
+    sunsprite.tilePosition.x -= xdiff * 2;
 
     game.physics.overlap(playerShip, enemies, enemyCollide);
     game.physics.overlap(shipBullets, enemies, bulletCollide);
@@ -86,8 +101,8 @@ window.onload = function() {
   }
 
   function render() {
-    game.debug.renderCameraInfo(game.camera, 32, 32);
-    game.debug.renderSpriteCoords(playerShip, 32, 100);
+    //game.debug.renderCameraInfo(game.camera, 32, 32);
+    //game.debug.renderSpriteCoords(playerShip, 32, 100);
   }
 
   function pauseToggle() {
@@ -110,6 +125,8 @@ window.onload = function() {
   function bulletCollide(bullet, enemy) {
     bullet.kill();
     enemy.kill();
+    score += 10;
+    scoreText.content = 'Score: ' + score;    
   }
   //  Called if the bullet goes out of the screen
   function resetBullet (bullet) {
