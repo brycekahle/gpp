@@ -20,10 +20,10 @@ function PlayerAssist(game, bullets) {
     var yAxis = pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y);
     var xAxis = pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X);
     if (Math.abs(yAxis) > 0.1) {
-      this.sprite.cameraOffset.y += yAxis * this.moveSpeed;
+      this.sprite.cameraOffset.y = game.math.clamp(this.sprite.cameraOffset.y + yAxis * this.moveSpeed, 0, game.world.height);
     }
     if (Math.abs(xAxis) > 0.1) {
-      this.sprite.cameraOffset.x += xAxis * this.moveSpeed;
+      this.sprite.cameraOffset.x = game.math.clamp(this.sprite.cameraOffset.x + xAxis * this.moveSpeed, 0, game.world.width);
     }
   }
 
@@ -38,9 +38,11 @@ function PlayerAssist(game, bullets) {
           bullet.scale.x = 0.99;
           bullet.scale.y = 0.99;
           bullet.anchor.setTo(0.5, 0.5);
+          bullet.alpha = 0.2;
           bullet.update = function(){
             bullet.scale.x -= 0.01;
             bullet.scale.y -= 0.01;
+            bullet.alpha += 0.01;
           };
           bulletTime = game.time.now + 500;
         }
