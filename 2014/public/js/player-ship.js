@@ -72,6 +72,7 @@ PlayerShip.prototype.shoot = function(){
         bullet.scale.x = 0.2;
         bullet.scale.y = 0.2;
         bullet.anchor.setTo(0.5, 0.5);
+        bullet.alpha = 1;
         bullet.update = function(){};
         this.bulletTime = this.game.time.now + 250;
       }
