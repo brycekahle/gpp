@@ -1,70 +1,80 @@
 'use strict';
+
+
 function PlayerShip(game, bullets){
-    this.sprite = game.add.sprite(64, game.world.height / 2, 'player1');
-    this.sprite.anchor.setTo(0.5, 0.5);
-    this.sprite.body.collideWorldBounds = true;
-    this.sprite.fixedToCamera = true;
-    var pad1 = game.input.gamepad.pad1;
-    var cursors = game.input.keyboard.createCursorKeys();
-    var maxTiltAngle = 20;
-    var bulletTime = 0;
-    this.moveSpeed = 10;
-
-    this.update = function(){
-      this.move();
-      this.shoot();
-    };
-
-    this.move = function() {
-      var yAxis = pad1.connected ? pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) : 0;
-
-      if (cursors.up.isDown || yAxis < -0.3) {
-        yAxis = yAxis || -1.0;
-        var ydiff = yAxis * this.moveSpeed;
-        this.sprite.cameraOffset.y = game.math.clamp(this.sprite.cameraOffset.y + ydiff, this.sprite.height/2, game.world.height - this.sprite.height/2);
-
-        if (this.sprite.angle > -maxTiltAngle){
-          this.sprite.angle--;
-        }
-      }
-      else if (cursors.down.isDown || yAxis > 0.3) {
-        yAxis = yAxis || 1.0;
-        var ydiff = yAxis * this.moveSpeed;
-        this.sprite.cameraOffset.y = game.math.clamp(this.sprite.cameraOffset.y + ydiff, this.sprite.height/2, game.world.height - this.sprite.height/2);
-
-        if (this.sprite.angle < maxTiltAngle){
-          this.sprite.angle++;
-        }
-      }
-      else{
-        if (this.sprite.angle > 1){
-          this.sprite.angle -= 2;
-        } else if (this.sprite.angle < -1){
-          this.sprite.angle += 2;
-        } else{
-          this.sprite.angle = 0;
-        }
-      }
-    };
-
-    this.shoot = function(){
-      if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) ||
-       (pad1.connected && pad1.buttonValue(Phaser.Gamepad.XBOX360_RIGHT_TRIGGER) > 0)){
-        if (game.time.now > bulletTime)
-        {
-          var bullet = bullets.getFirstExists(false);
-
-          if (bullet)
-          {
-            bullet.reset(this.sprite.x + 6, this.sprite.y - 8);
-            bullet.body.velocity.x = 500;
-            bullet.scale.x = 0.2;
-            bullet.scale.y = 0.2;
-            bullet.anchor.setTo(0.5, 0.5);
-            bullet.update = function(){};
-            bulletTime = game.time.now + 250;
-          }
-        }
-      }
-    };
+  Phaser.Sprite.call(this, game, 64, 300, 'player1');
+  game.add.existing(this);
+  
+  this.scale.setTo(0.5, 0.5);
+  this.anchor.setTo(0.5, 0.5);
+  this.body.collideWorldBounds = true;
+  this.fixedToCamera = true;
+  this.cursors = game.input.keyboard.createCursorKeys();
+  this.maxTiltAngle = 20;
+  this.bulletTime = 0;
+  this.moveSpeed = 10;
+  this.pad1 = game.input.gamepad.pad1;
+  this.bullets = bullets;
 }
+
+PlayerShip.prototype = Object.create(Phaser.Sprite.prototype);
+PlayerShip.prototype.constructor = PlayerShip;
+
+PlayerShip.prototype.update = function(){
+  this.move();
+  this.shoot();
+};
+
+PlayerShip.prototype.move = function() {
+  var yAxis = this.pad1.connected ? this.pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) : 0;
+
+  if (this.cursors.up.isDown || yAxis < -0.3) {
+    yAxis = yAxis || -1.0;
+    var ydiff = yAxis * this.moveSpeed;
+    this.cameraOffset.y = this.game.math.clamp(this.cameraOffset.y + ydiff, this.height/2, 
+      this.game.world.height - this.height/2);
+
+    if (this.angle > -this.maxTiltAngle){
+      this.angle--;
+    }
+  }
+  else if (this.cursors.down.isDown || yAxis > 0.3) {
+    yAxis = yAxis || 1.0;
+    var ydiff = yAxis * this.moveSpeed;
+    this.cameraOffset.y = this.game.math.clamp(this.cameraOffset.y + ydiff, this.height/2, this.game.world.height - this.height/2);
+
+    if (this.angle < this.maxTiltAngle){
+      this.angle++;
+    }
+  }
+  else{
+    if (this.angle > 1){
+      this.angle -= 2;
+    } else if (this.angle < -1){
+      this.angle += 2;
+    } else{
+      this.angle = 0;
+    }
+  }
+};
+
+PlayerShip.prototype.shoot = function(){
+  if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) ||
+   (this.pad1.connected && this.pad1.buttonValue(Phaser.Gamepad.XBOX360_RIGHT_TRIGGER) > 0)){
+    if (this.game.time.now > this.bulletTime)
+    {
+      var bullet = this.bullets.getFirstExists(false);
+
+      if (bullet)
+      {
+        bullet.reset(this.x + 6, this.y - 8);
+        bullet.body.velocity.x = 500;
+        bullet.scale.x = 0.2;
+        bullet.scale.y = 0.2;
+        bullet.anchor.setTo(0.5, 0.5);
+        bullet.update = function(){};
+        this.bulletTime = this.game.time.now + 250;
+      }
+    }
+  }
+};

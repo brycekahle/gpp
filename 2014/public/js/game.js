@@ -49,14 +49,13 @@ window.onload = function() {
   }
 
   function update() {
-    playerShip.update();
     player2.update();
     
     var xdiff = (starSpeed * (game.time.elapsed / 1000));
     starsprite.tilePosition.x -= xdiff;
 
-    game.physics.collide(playerShip.sprite, enemies, enemyCollide);
-    game.physics.collide(bullets, enemies, bulletCollide);
+    game.physics.collide(playerShip, enemies, enemyCollide);
+    game.physics.collide(bullets, enemies, bulletCollide, bulletBeforeCollide);
 
     bullets.forEach(function (bullet) {
       if (bullet.alive){
@@ -71,7 +70,7 @@ window.onload = function() {
 
   function render() {
     game.debug.renderCameraInfo(game.camera, 32, 32);
-    game.debug.renderSpriteCoords(playerShip.sprite, 32, 100);
+    game.debug.renderSpriteCoords(playerShip, 32, 100);
   }
 
   function pauseToggle() {
@@ -87,10 +86,12 @@ window.onload = function() {
   function enemyCollide(player, enemy) {
     player.kill();
   }
+  function bulletBeforeCollide(bullet, enemy){
+    // Normal bullets are 0.2 in size.
+    // player 2 bullets only hit when 0.2 or less
+    return bullet.scale.x <= 0.2;
+  }
   function bulletCollide(bullet, enemy) {
-    if (bullet.scale.x < 1 && bullet.scale.x > 0.2) {
-      return;
-    }
     bullet.kill();
     enemy.kill();
   }
