@@ -27,6 +27,7 @@
   , "navigator": true
   , "$": true
   , "Phaser": true
+  , "PlayerShip": true
   }
 , "predef": [
     "io"
