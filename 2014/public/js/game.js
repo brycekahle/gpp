@@ -40,8 +40,8 @@ window.onload = function() {
     shipBullets = game.add.group();
     shipBullets.createMultiple(50, 'bullet');
     shipBullets.setAll('autoCull', true);
-    shipBullets.setAll('scale.x', 0.2);
-    shipBullets.setAll('scale.y', 0.2);
+    shipBullets.setAll('scale.x', 0.1);
+    shipBullets.setAll('scale.y', 0.1);
     shipBullets.setAll('anchor.x', 0.5);
     shipBullets.setAll('anchor.y', 0.5);
     shipBullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);

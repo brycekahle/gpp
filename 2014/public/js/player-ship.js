@@ -80,7 +80,7 @@ PlayerShip.prototype.shoot = function(){
 
       if (bullet)
       {
-        bullet.reset(this.x + 6, this.y - 8);
+        bullet.reset(this.x, this.y);
         bullet.body.velocity.x = 500;
         this.bulletTime = this.game.time.now + 250;
       }
