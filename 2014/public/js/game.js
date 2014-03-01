@@ -11,7 +11,7 @@ window.onload = function() {
   function preload() {
     player1 = game.load.spritesheet('player1', 'assets/player1.png', 100, 100);
     game.load.spritesheet('enemy', 'assets/enemy.png', 25, 25);
-    game.load.spritesheet('reticle', 'assets/reticle.png', 100, 100);
+    game.load.spritesheet('reticle', 'assets/reticle.png', 217, 206);
   }
 
   function create() {
