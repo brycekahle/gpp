@@ -5,7 +5,7 @@ function PlayerAssist(game) {
   this.sprite.anchor.setTo(0.5, 0.5);
   this.sprite.fixedToCamera = true;
 
-  var pad = game.input.gamepad.pad1;
+  var pad = game.input.gamepad.pad2;
   this.moveSpeed = 10;
 
   this.update = function() {

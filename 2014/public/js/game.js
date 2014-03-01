@@ -1,7 +1,7 @@
 'use strict';
 
 // A little lame, but want this for easy debugging
-var player1, playerShip, game, enemies, player2;
+var player1, playerShip, game, enemies, bullets, player2;
 
 window.onload = function() {
   game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
@@ -18,9 +18,14 @@ window.onload = function() {
     game.world.setBounds(0, 0, 80000, 600);
 
     enemies = game.add.group();
+    bullets = game.add.group();
+    bullets.createMultiple(50, 'bullet');
+    bullets.setAll('autoCull', true);
+    bullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
+
     game.input.gamepad.start();
 
-    playerShip = new PlayerShip(game);
+    playerShip = new PlayerShip(game, bullets);
     player2 = new PlayerAssist(game);
 
     for (var i=0; i < 20; i++) {
@@ -38,6 +43,11 @@ window.onload = function() {
     game.camera.x += xdiff;
 
     game.physics.collide(playerShip.sprite, enemies, enemyCollide);
+    game.physics.collide(bullets, enemies, bulletCollide);
+
+    bullets.forEach(function (bullet) {
+      if (bullet.alive && !bullet.renderable) bullet.kill();
+    });
   }
 
   function render() {
@@ -51,5 +61,13 @@ window.onload = function() {
 
   function enemyCollide(player, enemy) {
     player.kill();
+  }
+  function bulletCollide(bullet, enemy) {
+    bullet.kill();
+    enemy.kill();
+  }
+  //  Called if the bullet goes out of the screen
+  function resetBullet (bullet) {
+    bullet.kill();
   }
 };
