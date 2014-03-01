@@ -4,7 +4,7 @@
 var player1, playerShip, game, enemies, bullets, player2;
 
 window.onload = function() {
-  game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
+  game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
 
   var cameraSpeed = 200.0; // 100x / second
 
