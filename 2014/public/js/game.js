@@ -1,7 +1,7 @@
 'use strict';
 
 // A little lame, but want this for easy debugging
-var player1, playerShip, game, enemies, bullets;
+var player1, playerShip, game, enemies, bullets, player2;
 
 window.onload = function() {
   game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
@@ -11,6 +11,7 @@ window.onload = function() {
   function preload() {
     player1 = game.load.spritesheet('player1', 'assets/player1.png', 100, 100);
     game.load.spritesheet('enemy', 'assets/enemy.png', 25, 25);
+    game.load.spritesheet('reticle', 'assets/reticle.png', 100, 100);
   }
 
   function create() {
@@ -24,6 +25,7 @@ window.onload = function() {
     game.input.gamepad.start();
 
     playerShip = new PlayerShip(game, bullets);
+    player2 = new PlayerAssist(game);
 
     for (var i=0; i < 20; i++) {
       enemies.create(game.rnd.integerInRange(200, 10000), game.rnd.integerInRange(25, 575), 'enemy');
@@ -34,6 +36,8 @@ window.onload = function() {
 
   function update() {
     playerShip.update();
+    player2.update();
+    
     var xdiff = (cameraSpeed * (game.time.elapsed / 1000));
     game.camera.x += xdiff;
 
