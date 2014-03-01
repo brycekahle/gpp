@@ -120,7 +120,10 @@ window.onload = function() {
     player.health -= 0.25;
     if (player.health <= 0) {
       player.kill();
-    };
+      setTimeout(function () {
+        window.location.reload();
+      }, 1500);
+    }
   }
   function bulletBeforeCollide(bullet, enemy){
     // player 2 bullets only hit when 0.2 or less
@@ -133,7 +136,7 @@ window.onload = function() {
       enemy.kill();
       score += 10;
       scoreText.content = 'Score: ' + score; 
-    };   
+    }
   }
   //  Called if the bullet goes out of the screen
   function resetBullet (bullet) {
