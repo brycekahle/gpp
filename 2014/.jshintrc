@@ -22,26 +22,12 @@
   , "it": false
   , "before": false
   , "after": false
-  , "d3": true
-  , "_": true
-  , "Backbone": true
   , "window": true
   , "document": true
   , "navigator": true
   , "$": true
-  , "jQuery": true
-  , "io": true
-  , "Store": true
-  , "Sync": true
-  , "gigya": true
-  , "Zepto": true
-  , "enquire": true
-  , "registry": true
-  , "linkify": true
-  , "moment": true
-  , "Spinner": true
-  , "templatizer": true
-  , "heatmapFactory": true
+  , "Phaser": true
+  , "PlayerShip": true
   }
 , "predef": [
     "io"
