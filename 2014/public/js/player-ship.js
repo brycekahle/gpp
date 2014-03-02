@@ -27,6 +27,8 @@ PlayerShip.prototype.update = function(){
   this.move();
   this.shoot();
   this.shield.body.y = this.y - 64;
+  this.shield.scale.x = 0.25;
+  this.shield.scale.y = 0.25;
 };
 
 PlayerShip.prototype.kill = function () {
