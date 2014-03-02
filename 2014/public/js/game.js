@@ -5,7 +5,7 @@ var player1, playerShip, game, enemies, shipBullets, player2Bullets, player2, st
 var sunsprite, rocksprite, gassprite;
 var score = 0, scoreText, boom;
 
-var musicVolume = 0.2;
+var musicVolume = 0.5;
 
 window.onload = function() {
   game = new Phaser.Game(960, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
