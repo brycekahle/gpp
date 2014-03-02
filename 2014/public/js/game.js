@@ -44,6 +44,7 @@ window.onload = function() {
     gassprite = game.add.tileSprite(0, 0, 2048, 1024, 'gasgiant');
 
     var logosprite = game.add.sprite(480, 0, 'logo');
+    logosprite.scale.setTo(0.5, 0.5);
     logosprite.x -= logosprite.width/2;
 
     boom = game.add.audio('boom');
