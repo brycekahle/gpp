@@ -21,7 +21,7 @@ window.onload = function() {
     player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 256, 128);
     game.load.spritesheet('enemy', 'assets/enemy-small.png', 96, 59);
     game.load.spritesheet('reticle', 'assets/reticle.png', 230, 230);
-    game.load.spritesheet('bullet', 'assets/bullet.png', 200, 200);
+    game.load.spritesheet('bullet', 'assets/side_missle.png', 128, 32);
     game.load.spritesheet('player2Missile', 'assets/top_down_missle.png', 256, 256);
     game.load.spritesheet('deathbits', 'assets/deathbits.png', 10, 10);
     game.load.audio('music1', ['assets/music1.mp3']);
@@ -49,8 +49,8 @@ window.onload = function() {
     shipBullets = game.add.group();
     shipBullets.createMultiple(50, 'bullet');
     shipBullets.setAll('autoCull', true);
-    shipBullets.setAll('scale.x', 0.1);
-    shipBullets.setAll('scale.y', 0.1);
+    shipBullets.setAll('scale.x', 0.7);
+    shipBullets.setAll('scale.y', 0.7);
     shipBullets.setAll('anchor.x', 0.5);
     shipBullets.setAll('anchor.y', 0.5);
     shipBullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
@@ -91,7 +91,8 @@ window.onload = function() {
 
     game.physics.overlap(playerShip, enemies, enemyCollide);
     game.physics.overlap(shipBullets, enemies, bulletCollide);
-    game.physics.overlap(player2Bullets, enemies, bulletCollide, bulletBeforeCollide);
+    game.physics.overlap(player2Bullets, enemies, bullet2Collide, bulletBeforeCollide);
+    game.physics.overlap(playerShip, player2Bullets, healPlayer, beforeCollideHeal);
 
     shipBullets.forEach(function (bullet) {
       if (bullet.alive && !bullet.renderable) {
@@ -134,8 +135,13 @@ window.onload = function() {
         window.location.reload();
       }, 1500);
     }
+    enemy.kill();
   }
   function bulletBeforeCollide(bullet, enemy){
+    // player 2 bullets only hit when 0.2 or less
+    return bullet.scale.x <= 0.2;
+  }
+  function beforeCollideHeal(player, bullet){
     // player 2 bullets only hit when 0.2 or less
     return bullet.scale.x <= 0.2;
   }
@@ -148,6 +154,18 @@ window.onload = function() {
       score += enemy.score;
       scoreText.content = 'Score: ' + score; 
       boom.play();
+    }
+  }
+  function bullet2Collide(bullet, enemy) {
+    bullet.kill();
+    enemy.kill();
+    score += 10;
+    scoreText.content = 'Score: ' + score; 
+  }
+  function healPlayer(player, bullet) {
+    bullet.kill();
+    if (player.health < 1) {
+      player.health += 0.25;
     }
   }
   //  Called if the bullet goes out of the screen
