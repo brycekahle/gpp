@@ -142,6 +142,7 @@ window.onload = function() {
         window.location.reload();
       }, 1500);
     }
+    enemy.shield.kill();
     enemy.kill();
   }
   function bulletBeforeCollide(bullet, enemy){
