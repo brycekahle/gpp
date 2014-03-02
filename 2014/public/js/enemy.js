@@ -11,6 +11,9 @@ var Enemy = function (game, spriteName, score) {
   this.shield.angle = 180;
   this.shield.scale.x = 0.25;
   this.shield.scale.y = 0.25;
+  if (game.rnd.integerInRange(1,10) > 4) {
+  	this.shield.kill();
+  };
 };
 
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);
