@@ -17,6 +17,7 @@ window.onload = function() {
     game.load.image('gasgiant', 'assets/gas_giant.png');
     game.load.image('sun', 'assets/small_sun.png');
     game.load.image('rock', 'assets/foreground_rock.png');
+    game.load.image('shield', 'assets/player-ship-sheild.png');
     
     player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 256, 128);
     game.load.spritesheet('enemy', 'assets/enemy-small.png', 96, 59);
@@ -124,8 +125,9 @@ window.onload = function() {
   }
 
   function enemyCollide(player, enemy) {
-    player.health -= 0.25;
-    if (player.health <= 0) {
+    if (player.shield.alive) {
+      player.shield.kill();
+    } else {
       player.kill();
       setTimeout(function () {
         window.location.reload();
@@ -158,8 +160,8 @@ window.onload = function() {
   }
   function healPlayer(player, bullet) {
     bullet.kill();
-    if (player.health < 1) {
-      player.health += 0.25;
+    if (!player.shield.alive) {
+      player.shield.reset();
     }
   }
   //  Called if the bullet goes out of the screen
