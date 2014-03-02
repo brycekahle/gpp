@@ -7,6 +7,13 @@ var Enemy = function (game, spriteName, score) {
   game.add.existing(this);
   this.swayScale = game.rnd.integerInRange(50, 400);
   this.score = score;
+  this.shield = game.add.sprite(64, 300, 'shield');
+  this.shield.angle = 180;
+  this.shield.scale.x = 0.25;
+  this.shield.scale.y = 0.25;
+  if (game.rnd.integerInRange(1,10) > 4) {
+  	this.shield.kill();
+  };
 };
 
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);
@@ -14,6 +21,8 @@ Enemy.prototype.constructor = Enemy;
 
 Enemy.prototype.update = function () {
   this.body.velocity.y = Math.sin(2 * Math.PI * (this.game.time.now / 1000) + (this.phase / 360) * (2*Math.PI)) * this.swayScale;
+  this.shield.body.y = this.y + 96;
+  this.shield.body.x = this.x + 20;
 };
 
 Enemy.prototype.kill = function() {

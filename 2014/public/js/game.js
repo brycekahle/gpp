@@ -17,6 +17,7 @@ window.onload = function() {
     game.load.image('gasgiant', 'assets/gas_giant.png');
     game.load.image('sun', 'assets/small_sun.png');
     game.load.image('rock', 'assets/foreground_rock.png');
+    game.load.image('shield', 'assets/player-ship-sheild.png');
     game.load.image('logo', 'assets/logo.png');
     
     player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 256, 128);
@@ -132,8 +133,9 @@ window.onload = function() {
   }
 
   function enemyCollide(player, enemy) {
-    player.health -= 0.25;
-    if (player.health <= 0) {
+    if (player.shield.alive) {
+      player.shield.kill();
+    } else {
       boom.play();
       player.kill();
       setTimeout(function () {
@@ -152,25 +154,31 @@ window.onload = function() {
   }
   function bulletCollide(bullet, enemy) {
     bullet.kill();
-    enemy.health -= 0.5;
-    if (enemy.health <= 0) {
-      enemy.kill();
-      enemy.reset(game.rnd.integerInRange(5000, 10000), game.rnd.integerInRange(25, 575), 1);
-      score += enemy.score;
-      scoreText.content = 'Score: ' + score; 
-      boom.play();
-    }
+    if (enemy.shield.alive) {
+      return;
+    };
+    enemy.kill();
+    enemy.reset(game.rnd.integerInRange(5000, 10000), game.rnd.integerInRange(25, 575), 1);
+    score += enemy.score;
+    scoreText.content = 'Score: ' + score; 
+    boom.play();
   }
   function bullet2Collide(bullet, enemy) {
     bullet.kill();
+    if (enemy.shield.alive) {
+      enemy.shield.kill();
+      return;
+    };
     enemy.kill();
     score += enemy.score;
     scoreText.content = 'Score: ' + score; 
   }
   function healPlayer(player, bullet) {
     bullet.kill();
-    if (player.health < 1) {
-      player.health += 0.25;
+    if (!player.shield.alive) {
+      player.shield.reset();
+      player.shield.scale.x = 0.25;
+      player.shield.scale.y = 0.25;
     }
   }
   //  Called if the bullet goes out of the screen

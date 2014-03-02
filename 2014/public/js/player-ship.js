@@ -15,6 +15,9 @@ function PlayerShip(game, bullets){
   this.moveSpeed = 10;
   this.pad1 = game.input.gamepad.pad1;
   this.bullets = bullets;
+  this.shield = game.add.sprite(64, 300, 'shield');
+  this.shield.scale.x = 0.25;
+  this.shield.scale.y = 0.25;
   this.sound = game.add.audio('missile');
 }
 
@@ -24,6 +27,9 @@ PlayerShip.prototype.constructor = PlayerShip;
 PlayerShip.prototype.update = function(){
   this.move();
   this.shoot();
+  this.shield.body.y = this.y - 64;
+  this.shield.scale.x = 0.25;
+  this.shield.scale.y = 0.25;
 };
 
 PlayerShip.prototype.kill = function () {
@@ -45,9 +51,6 @@ PlayerShip.prototype.move = function() {
     this.cameraOffset.y = this.game.math.clamp(this.cameraOffset.y + ydiff, this.height/2, 
       this.game.world.height - this.height/2);
 
-    // if (this.angle > -this.maxTiltAngle){
-    //   this.angle--;
-    // }
     this.frame = 1;
   }
   else if (this.cursors.down.isDown || yAxis > 0.3) {
@@ -55,19 +58,9 @@ PlayerShip.prototype.move = function() {
     var ydiff = yAxis * this.moveSpeed;
     this.cameraOffset.y = this.game.math.clamp(this.cameraOffset.y + ydiff, this.height/2, this.game.world.height - this.height/2);
 
-    // if (this.angle < this.maxTiltAngle){
-    //   this.angle++;
-    // }
     this.frame = 2;
   }
   else{
-    // if (this.angle > 1){
-    //   this.angle -= 2;
-    // } else if (this.angle < -1){
-    //   this.angle += 2;
-    // } else{
-    //   this.angle = 0;
-    // }
     this.frame = 0;
   }
 };
