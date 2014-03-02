@@ -31,7 +31,6 @@ window.onload = function() {
     starsprite = game.add.tileSprite(0, 0, 4096, 1024, 'starfield');
     sunsprite = game.add.tileSprite(0, 0, 2048, 1024, 'sun');
     gassprite = game.add.tileSprite(0, 0, 2048, 1024, 'gasgiant');
-    rocksprite = game.add.tileSprite(0, 0, 2048, 1024, 'rock');
 
     music = game.add.audio('music1', musicVolume, true);
     music.play('', 0, 0, true);
@@ -57,7 +56,7 @@ window.onload = function() {
     playerShip = new PlayerShip(game, shipBullets);
     player2 = new PlayerAssist(game, player2Bullets);
 
-    for (var i=0; i < 20; i++) {
+    for (var i=0; i < 200; i++) {
       enemies.add(new Enemy(game));
     }
 
@@ -68,6 +67,7 @@ window.onload = function() {
     var mKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
     mKey.onDown.add(toggleMute, this);
 
+    rocksprite = game.add.tileSprite(0, 0, 4096, 1024, 'rock');
     scoreText = game.add.text(16, 16, 'Score: 0', { font: '32px arial', fill: '#fff' });  
   }
 
@@ -77,7 +77,7 @@ window.onload = function() {
     var xdiff = (starSpeed * (game.time.elapsed / 1000));
     starsprite.tilePosition.x -= xdiff;
     gassprite.tilePosition.x -= xdiff * 8;
-    rocksprite.tilePosition.x -= xdiff * 4;
+    rocksprite.tilePosition.x -= xdiff * 40;
     sunsprite.tilePosition.x -= xdiff * 2;
 
     game.physics.overlap(playerShip, enemies, enemyCollide);
@@ -121,7 +121,10 @@ window.onload = function() {
     player.health -= 0.25;
     if (player.health <= 0) {
       player.kill();
-    };
+      setTimeout(function () {
+        window.location.reload();
+      }, 1500);
+    }
     enemy.kill();
   }
   function bulletBeforeCollide(bullet, enemy){
@@ -139,7 +142,7 @@ window.onload = function() {
       enemy.kill();
       score += 10;
       scoreText.content = 'Score: ' + score; 
-    };
+    }
   }
   function bullet2Collide(bullet, enemy) {
     bullet.kill();
@@ -151,7 +154,7 @@ window.onload = function() {
     bullet.kill();
     if (player.health < 1) {
       player.health += 0.25;
-    };
+    }
   }
   //  Called if the bullet goes out of the screen
   function resetBullet (bullet) {
