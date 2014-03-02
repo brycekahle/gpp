@@ -3,9 +3,9 @@
 // A little lame, but want this for easy debugging
 var player1, playerShip, game, enemies, shipBullets, player2Bullets, player2, starsprite, music;
 var sunsprite, rocksprite, gassprite;
-var score = 0, scoreText;
+var score = 0, scoreText, boom;
 
-var musicVolume = 0.5;
+var musicVolume = 0.2;
 
 window.onload = function() {
   game = new Phaser.Game(960, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
@@ -17,11 +17,12 @@ window.onload = function() {
     game.load.image('gasgiant', 'assets/gas_giant.png');
     game.load.image('sun', 'assets/small_sun.png');
     game.load.image('rock', 'assets/foreground_rock.png');
+    game.load.image('logo', 'assets/logo.png');
     
     player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 256, 128);
     game.load.spritesheet('enemy', 'assets/enemy-small.png', 96, 59);
     game.load.spritesheet('reticle', 'assets/reticle.png', 230, 230);
-    game.load.spritesheet('bullet', 'assets/bullet.png', 200, 200);
+    game.load.spritesheet('bullet', 'assets/side_missle.png', 128, 32);
     game.load.spritesheet('player2Missile', 'assets/top_down_missle.png', 256, 256);
     game.load.spritesheet('deathbits', 'assets/deathbits.png', 10, 10);
     game.load.audio('music1', ['assets/music1.mp3']);
@@ -31,6 +32,8 @@ window.onload = function() {
     game.load.audio('laser3', ['assets/Laser 3.mp3']);
     game.load.audio('laser4', ['assets/Laser 4.mp3']);
     game.load.audio('laser5', ['assets/Laser 5.mp3']);
+    game.load.audio('boom', ['assets/Explosion.mp3']);
+    game.load.audio('missile', ['assets/Missile.mp3']);
   }
 
   function create() {
@@ -38,16 +41,21 @@ window.onload = function() {
     sunsprite = game.add.tileSprite(0, 0, 2048, 1024, 'sun');
     gassprite = game.add.tileSprite(0, 0, 2048, 1024, 'gasgiant');
 
+    var logosprite = game.add.sprite(480, 0, 'logo');
+    logosprite.x -= logosprite.width/2;
+
+    boom = game.add.audio('boom');
+
     music = game.add.audio('music1', musicVolume, true);
-    music.play('', 0, 0, true);
+    music.play('', 0, musicVolume, true);
     //game.world.setBounds(0, 0, 80000, 600);
 
     enemies = game.add.group();
     shipBullets = game.add.group();
     shipBullets.createMultiple(50, 'bullet');
     shipBullets.setAll('autoCull', true);
-    shipBullets.setAll('scale.x', 0.1);
-    shipBullets.setAll('scale.y', 0.1);
+    shipBullets.setAll('scale.x', 0.7);
+    shipBullets.setAll('scale.y', 0.7);
     shipBullets.setAll('anchor.x', 0.5);
     shipBullets.setAll('anchor.y', 0.5);
     shipBullets.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', resetBullet, this);
@@ -126,6 +134,7 @@ window.onload = function() {
   function enemyCollide(player, enemy) {
     player.health -= 0.25;
     if (player.health <= 0) {
+      boom.play();
       player.kill();
       setTimeout(function () {
         window.location.reload();
@@ -145,15 +154,17 @@ window.onload = function() {
     bullet.kill();
     enemy.health -= 0.5;
     if (enemy.health <= 0) {
+      enemy.kill();
       enemy.reset(game.rnd.integerInRange(5000, 10000), game.rnd.integerInRange(25, 575), 1);
       score += enemy.score;
       scoreText.content = 'Score: ' + score; 
+      boom.play();
     }
   }
   function bullet2Collide(bullet, enemy) {
     bullet.kill();
     enemy.kill();
-    score += 10;
+    score += enemy.score;
     scoreText.content = 'Score: ' + score; 
   }
   function healPlayer(player, bullet) {

@@ -15,6 +15,7 @@ function PlayerShip(game, bullets){
   this.moveSpeed = 10;
   this.pad1 = game.input.gamepad.pad1;
   this.bullets = bullets;
+  this.sound = game.add.audio('missile');
 }
 
 PlayerShip.prototype = Object.create(Phaser.Sprite.prototype);
@@ -80,6 +81,7 @@ PlayerShip.prototype.shoot = function(){
 
       if (bullet)
       {
+        this.sound.play(false, 0, 0.5);
         bullet.reset(this.x, this.y);
         bullet.body.velocity.x = 500;
         this.bulletTime = this.game.time.now + 250;
