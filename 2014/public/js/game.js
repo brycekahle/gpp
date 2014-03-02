@@ -159,7 +159,7 @@ window.onload = function() {
   function bullet2Collide(bullet, enemy) {
     bullet.kill();
     enemy.kill();
-    score += 10;
+    score += enemy.score;
     scoreText.content = 'Score: ' + score; 
   }
   function healPlayer(player, bullet) {
