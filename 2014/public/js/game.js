@@ -25,6 +25,12 @@ window.onload = function() {
     game.load.spritesheet('player2Missile', 'assets/top_down_missle.png', 256, 256);
     game.load.spritesheet('deathbits', 'assets/deathbits.png', 10, 10);
     game.load.audio('music1', ['assets/music1.mp3']);
+
+    game.load.audio('laser1', ['assets/Laser 1.mp3']);
+    game.load.audio('laser2', ['assets/Laser 2.mp3']);
+    game.load.audio('laser3', ['assets/Laser 3.mp3']);
+    game.load.audio('laser4', ['assets/Laser 4.mp3']);
+    game.load.audio('laser5', ['assets/Laser 5.mp3']);
   }
 
   function create() {
@@ -57,7 +63,7 @@ window.onload = function() {
     player2 = new PlayerAssist(game, player2Bullets);
 
     for (var i=0; i < 200; i++) {
-      enemies.add(new Enemy(game));
+      enemies.add(new Enemy(game, 'enemy', 10));
     }
 
     game.input.onDown.add(pauseToggle, this);
@@ -82,7 +88,8 @@ window.onload = function() {
 
     game.physics.overlap(playerShip, enemies, enemyCollide);
     game.physics.overlap(shipBullets, enemies, bulletCollide);
-    game.physics.overlap(player2Bullets, enemies, bulletCollide, bulletBeforeCollide);
+    game.physics.overlap(player2Bullets, enemies, bullet2Collide, bulletBeforeCollide);
+    game.physics.overlap(playerShip, player2Bullets, healPlayer, beforeCollideHeal);
 
     shipBullets.forEach(function (bullet) {
       if (bullet.alive && !bullet.renderable) {
@@ -124,8 +131,13 @@ window.onload = function() {
         window.location.reload();
       }, 1500);
     }
+    enemy.kill();
   }
   function bulletBeforeCollide(bullet, enemy){
+    // player 2 bullets only hit when 0.2 or less
+    return bullet.scale.x <= 0.2;
+  }
+  function beforeCollideHeal(player, bullet){
     // player 2 bullets only hit when 0.2 or less
     return bullet.scale.x <= 0.2;
   }
@@ -133,9 +145,21 @@ window.onload = function() {
     bullet.kill();
     enemy.health -= 0.5;
     if (enemy.health <= 0) {
-      enemy.kill();
-      score += 10;
+      enemy.reset(game.rnd.integerInRange(5000, 10000), game.rnd.integerInRange(25, 575), 1);
+      score += enemy.score;
       scoreText.content = 'Score: ' + score; 
+    }
+  }
+  function bullet2Collide(bullet, enemy) {
+    bullet.kill();
+    enemy.kill();
+    score += 10;
+    scoreText.content = 'Score: ' + score; 
+  }
+  function healPlayer(player, bullet) {
+    bullet.kill();
+    if (player.health < 1) {
+      player.health += 0.25;
     }
   }
   //  Called if the bullet goes out of the screen

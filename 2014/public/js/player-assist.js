@@ -10,6 +10,14 @@ function PlayerAssist(game, bullets) {
   var pad = game.input.gamepad.pad2;
   this.moveSpeed = 10;
 
+  this.lasers = [
+    game.add.audio('laser1'),
+    game.add.audio('laser2'),
+    game.add.audio('laser3'),
+    game.add.audio('laser4'),
+    game.add.audio('laser5'),
+  ];
+
   this.update = function() {
     if (!pad.connected) return;
 
@@ -35,6 +43,8 @@ function PlayerAssist(game, bullets) {
         var bullet = bullets.getFirstExists(false);
 
         if (bullet) {
+          this.lasers[game.rnd.integerInRange(0, 4)].play();
+
           bullet.reset(this.sprite.x, this.sprite.y);
           bullet.scale.x = 0.49;
           bullet.scale.y = 0.49;
