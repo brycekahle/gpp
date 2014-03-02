@@ -34,6 +34,7 @@ window.onload = function() {
     game.load.audio('laser4', ['assets/Laser 4.mp3']);
     game.load.audio('laser5', ['assets/Laser 5.mp3']);
     game.load.audio('boom', ['assets/Explosion.mp3']);
+    game.load.audio('missile', ['assets/Missile.mp3']);
   }
 
   function create() {

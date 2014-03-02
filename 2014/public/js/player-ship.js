@@ -18,6 +18,7 @@ function PlayerShip(game, bullets){
   this.shield = game.add.sprite(64, 300, 'shield');
   this.shield.scale.x = 0.25;
   this.shield.scale.y = 0.25;
+  this.sound = game.add.audio('missile');
 }
 
 PlayerShip.prototype = Object.create(Phaser.Sprite.prototype);
@@ -73,6 +74,7 @@ PlayerShip.prototype.shoot = function(){
 
       if (bullet)
       {
+        this.sound.play(false, 0, 0.5);
         bullet.reset(this.x, this.y);
         bullet.body.velocity.x = 500;
         this.bulletTime = this.game.time.now + 250;
