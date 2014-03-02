@@ -2,7 +2,7 @@
 
 var Enemy = function (game, spriteName, score) {
   Phaser.Sprite.call(this, game, game.rnd.integerInRange(800, 10000), game.rnd.integerInRange(25, 575), spriteName);
-  this.body.velocity.x = -game.rnd.integerInRange(50, 80);
+  this.body.velocity.x = -game.rnd.integerInRange(50, 100);
   this.phase = game.rnd.angle();
   game.add.existing(this);
   this.swayScale = game.rnd.integerInRange(50, 400);

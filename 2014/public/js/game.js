@@ -3,9 +3,9 @@
 // A little lame, but want this for easy debugging
 var player1, playerShip, game, enemies, shipBullets, player2Bullets, player2, starsprite, music;
 var sunsprite, rocksprite, gassprite;
-var score = 0, scoreText;
+var score = 0, scoreText, boom;
 
-var musicVolume = 0.5;
+var musicVolume = 0.2;
 
 window.onload = function() {
   game = new Phaser.Game(960, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
@@ -31,12 +31,15 @@ window.onload = function() {
     game.load.audio('laser3', ['assets/Laser 3.mp3']);
     game.load.audio('laser4', ['assets/Laser 4.mp3']);
     game.load.audio('laser5', ['assets/Laser 5.mp3']);
+    game.load.audio('boom', ['assets/Explosion.mp3']);
   }
 
   function create() {
     starsprite = game.add.tileSprite(0, 0, 4096, 1024, 'starfield');
     sunsprite = game.add.tileSprite(0, 0, 2048, 1024, 'sun');
     gassprite = game.add.tileSprite(0, 0, 2048, 1024, 'gasgiant');
+
+    boom = game.add.audio('boom');
 
     music = game.add.audio('music1', musicVolume, true);
     music.play('', 0, 0, true);
@@ -125,6 +128,7 @@ window.onload = function() {
   function enemyCollide(player, enemy) {
     player.health -= 0.25;
     if (player.health <= 0) {
+      boom.play();
       player.kill();
       setTimeout(function () {
         window.location.reload();
@@ -139,9 +143,11 @@ window.onload = function() {
     bullet.kill();
     enemy.health -= 0.5;
     if (enemy.health <= 0) {
+      enemy.kill();
       enemy.reset(game.rnd.integerInRange(5000, 10000), game.rnd.integerInRange(25, 575), 1);
       score += enemy.score;
       scoreText.content = 'Score: ' + score; 
+      boom.play();
     }
   }
   //  Called if the bullet goes out of the screen
