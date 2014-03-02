@@ -82,7 +82,8 @@ window.onload = function() {
 
     game.physics.overlap(playerShip, enemies, enemyCollide);
     game.physics.overlap(shipBullets, enemies, bulletCollide);
-    game.physics.overlap(player2Bullets, enemies, bulletCollide, bulletBeforeCollide);
+    game.physics.overlap(player2Bullets, enemies, bullet2Collide, bulletBeforeCollide);
+    game.physics.overlap(playerShip, player2Bullets, healPlayer, beforeCollideHeal);
 
     shipBullets.forEach(function (bullet) {
       if (bullet.alive && !bullet.renderable) {
@@ -121,8 +122,13 @@ window.onload = function() {
     if (player.health <= 0) {
       player.kill();
     };
+    enemy.kill();
   }
   function bulletBeforeCollide(bullet, enemy){
+    // player 2 bullets only hit when 0.2 or less
+    return bullet.scale.x <= 0.2;
+  }
+  function beforeCollideHeal(player, bullet){
     // player 2 bullets only hit when 0.2 or less
     return bullet.scale.x <= 0.2;
   }
@@ -133,7 +139,19 @@ window.onload = function() {
       enemy.kill();
       score += 10;
       scoreText.content = 'Score: ' + score; 
-    };   
+    };
+  }
+  function bullet2Collide(bullet, enemy) {
+    bullet.kill();
+    enemy.kill();
+    score += 10;
+    scoreText.content = 'Score: ' + score; 
+  }
+  function healPlayer(player, bullet) {
+    bullet.kill();
+    if (player.health < 1) {
+      player.health += 0.25;
+    };
   }
   //  Called if the bullet goes out of the screen
   function resetBullet (bullet) {
