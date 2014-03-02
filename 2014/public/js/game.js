@@ -19,6 +19,7 @@ window.onload = function() {
     game.load.image('rock', 'assets/foreground_rock.png');
     game.load.image('shield', 'assets/player-ship-sheild.png');
     game.load.image('logo', 'assets/logo.png');
+    game.load.image('overlay', 'assets/overlay.png');
     
     player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 256, 128);
     game.load.spritesheet('enemy', 'assets/enemy-small.png', 96, 59);
@@ -83,6 +84,7 @@ window.onload = function() {
     mKey.onDown.add(toggleMute, this);
 
     rocksprite = game.add.tileSprite(0, 0, 4096, 1024, 'rock');
+    game.add.sprite(0, 0, 'overlay');
     scoreText = game.add.text(16, 16, 'Score: 0', { font: '32px arial', fill: '#fff' });  
   }
 
