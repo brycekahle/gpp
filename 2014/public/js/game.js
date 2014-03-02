@@ -17,6 +17,7 @@ window.onload = function() {
     game.load.image('gasgiant', 'assets/gas_giant.png');
     game.load.image('sun', 'assets/small_sun.png');
     game.load.image('rock', 'assets/foreground_rock.png');
+    game.load.image('logo', 'assets/logo.png');
     
     player1 = game.load.spritesheet('player1', 'assets/player_ship.png', 256, 128);
     game.load.spritesheet('enemy', 'assets/enemy-small.png', 96, 59);
@@ -38,6 +39,9 @@ window.onload = function() {
     starsprite = game.add.tileSprite(0, 0, 4096, 1024, 'starfield');
     sunsprite = game.add.tileSprite(0, 0, 2048, 1024, 'sun');
     gassprite = game.add.tileSprite(0, 0, 2048, 1024, 'gasgiant');
+
+    var logosprite = game.add.sprite(480, 0, 'logo');
+    logosprite.x -= logosprite.width/2;
 
     boom = game.add.audio('boom');
 
