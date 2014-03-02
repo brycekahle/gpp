@@ -1,11 +1,12 @@
 'use strict';
 
-var Enemy = function (game) {
-  Phaser.Sprite.call(this, game, game.rnd.integerInRange(800, 10000), game.rnd.integerInRange(25, 575), 'enemy');
-  this.body.velocity.x = -50;
+var Enemy = function (game, spriteName, score) {
+  Phaser.Sprite.call(this, game, game.rnd.integerInRange(800, 10000), game.rnd.integerInRange(25, 575), spriteName);
+  this.body.velocity.x = -game.rnd.integerInRange(50, 80);
   this.phase = game.rnd.angle();
   game.add.existing(this);
   this.swayScale = game.rnd.integerInRange(50, 400);
+  this.score = score;
 };
 
 Enemy.prototype = Object.create(Phaser.Sprite.prototype);
