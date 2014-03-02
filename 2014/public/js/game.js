@@ -42,7 +42,7 @@ window.onload = function() {
     boom = game.add.audio('boom');
 
     music = game.add.audio('music1', musicVolume, true);
-    music.play('', 0, 0, true);
+    music.play('', 0, musicVolume, true);
     //game.world.setBounds(0, 0, 80000, 600);
 
     enemies = game.add.group();
