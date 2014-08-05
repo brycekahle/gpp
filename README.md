@@ -13,4 +13,8 @@ Bryce Kahle (brycekahle), Ryan Versaw (rversaw), Andrew Dakin (dakin), and Toby 
 
 Awards: Audience Favorite, Best Glitch, and Best Multiplayer
 
+## 2014
+### Silent Swarm
+Bryce Kahle (brycekahle), Ryan Versaw (rversaw), Andrew Dakin (dakin), and Jared Burrell
 
+Awards: Best Multiplayer (Hoboken, NJ)
